@@ -27,7 +27,6 @@ namespace nominaApp
 
         public Form1()
         {
-            
             InitializeComponent();
             this.WindowState = FormWindowState.Maximized;
             ofd = new OpenFileDialog();
@@ -124,7 +123,8 @@ namespace nominaApp
             try
             {
               // Employee's Contructor Method.
-              Employee employee = new Employee(txtName.Text, numericSalary.Value, checkedDepartment.Text, ofd.FileName, photoPath, dgvAddEmployee, txtName, numericSalary, checkedDepartment, pbxEmployee, ofd);
+              Employee employee = new Employee(txtName.Text, numericSalary.Value, checkedDepartment.Text, 
+            ofd.FileName, photoPath, dgvAddEmployee, txtName, numericSalary, checkedDepartment, pbxEmployee, ofd);
               //MessageBox.Show(employee.ToString());
             }
             catch (Exception)
@@ -309,7 +309,9 @@ namespace nominaApp
                     }
                     writer.WriteLine();
                 }
+                writer.Close();
             }
+            
         }
         /// <summary>
         /// Delete Employee from the DataGridView using Suprimir | Delete Key.
@@ -414,6 +416,7 @@ namespace nominaApp
                         // Agregar la fila al DataGridView
                         dgvAddEmployee.Rows.Add(row);
                     }
+                    reader.Close();
                 }
             }
             // Read counter value from txt file if the file exists.
