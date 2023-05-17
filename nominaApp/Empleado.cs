@@ -75,7 +75,9 @@ namespace nominaApp
             return Bono = Salary * porcentajeBono;
         }
 
-        public Employee(string name, decimal salary, string department, string imagePath, string photoPath, DataGridView dataGridView, TextBox nameTextBox, NumericUpDown salaryNumericUpDown, CheckedListBox departmentCheckedListBox, PictureBox employeePictureBox, OpenFileDialog openFileDialog)
+        public Employee(string name, decimal salary, string department, string imagePath, 
+            string photoPath, DataGridView dataGridView, TextBox nameTextBox, NumericUpDown salaryNumericUpDown, 
+            CheckedListBox departmentCheckedListBox, PictureBox employeePictureBox, OpenFileDialog openFileDialog)
         {
            if (name == "")
             {

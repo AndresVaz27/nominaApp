@@ -607,8 +607,8 @@
             this.Controls.Add(this.dgvAddEmployee);
             this.Controls.Add(this.btnAddEmployee);
             this.Controls.Add(this.btnPayrollMenu);
-            this.Controls.Add(this.panelAddEmployee);
             this.Controls.Add(this.panelPayroll);
+            this.Controls.Add(this.panelAddEmployee);
             this.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

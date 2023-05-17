@@ -37,27 +37,7 @@ namespace nominaApp
             panelPayroll.Visible = false;
             imagesPath = @"C:\Users\andre\source\repos\nominaApp - Copy\nominaApp\bin\Debug\imagesPath";
         }
-        /// <summary>
-        /// Load Video Input Devices to show in ComboBox1.
-        /// </summary>
-        public void LoadDevices()
-        {
-            // Collection of Video Input Devices.
-            myDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-            if (myDevices.Count > 0)
-            {
-                devicesExist = true;
-                for (int i = 0; i < myDevices.Count; i++)
-             // Add each item from the collection (myDevices) to ComboBox1.
-                    comboBox1.Items.Add(myDevices[i].Name.ToString());
-                // Show default device in ComboBox1.
-                comboBox1.Text = myDevices[0].Name.ToString();
-
-            }
-            else
-                devicesExist = false;
-        }
-
+        #region Buttons
         /// <summary>
         /// Show Payroll Menu
         /// </summary>
@@ -125,7 +105,7 @@ namespace nominaApp
               // Employee's Contructor Method.
               Employee employee = new Employee(txtName.Text, numericSalary.Value, checkedDepartment.Text, 
             ofd.FileName, photoPath, dgvAddEmployee, txtName, numericSalary, checkedDepartment, pbxEmployee, ofd);
-              //MessageBox.Show(employee.ToString());
+              MessageBox.Show(employee.ToString());
             }
             catch (Exception)
             {
@@ -135,6 +115,58 @@ namespace nominaApp
 
         }
 
+        /// <summary>
+        /// Calculate Payroll
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnCalculate_Click(object sender, EventArgs e)
+        {
+            Employee emp;
+            emp = new Employee();
+            emp.Name = txtNamePayroll.Text;
+            emp.Salary = numericSalaryPayroll.Value;
+            emp.Department = lblDepartmentPayroll.Text;
+            emp.CalcularBono();
+            
+            decimal Total = numericHours.Value * numericSalaryPayroll.Value;
+            Total += numericRestDay.Value * 2 * numericSalaryPayroll.Value;
+            Total += numericHoliday.Value * 2 * numericSalaryPayroll.Value;
+            decimal bonusTotal = emp.Bono * numericHours.Value;
+            numericBonus.Value = bonusTotal;
+            Total += bonusTotal;
+            numericPerceptions.Value = Total;
+            Total -= emp.Salary * numericAbsence.Value;
+            Total -= numericDiscount.Value;
+            decimal deductions = (numericAbsence.Value * emp.Salary) + numericDiscount.Value;
+            numericDeductions.Value = deductions;
+            numericPay.Value = Total;
+        }
+        #endregion
+
+        #region CheckedDepartment Control SelectionMode = 1 only
+        /// <summary>
+        /// Select only 1 item in checkedDepartment Control.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void checkedDepartment_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            // If the user is selecting a new item, deseleccionar cualquier otro elemento
+            if (e.NewValue == CheckState.Checked)
+            {
+                for (int i = 0; i < checkedDepartment.Items.Count; ++i)
+                {
+                    if (i != e.Index && checkedDepartment.GetItemChecked(i))
+                    {
+                        checkedDepartment.SetItemChecked(i, false);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region dgvAddEmployee
         /// <summary>
         /// Show Employee's Info on Controls when clicking a DataGridView Row
         /// </summary>
@@ -147,18 +179,18 @@ namespace nominaApp
                 if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
                 {
 
-                        // Get Image Path
-                        string rutaImagen = dgvAddEmployee.Rows[e.RowIndex].Cells[3].Value.ToString();
-                        // Show the image in both picture boxes
-                        pbxEmployee.Image = Image.FromFile(rutaImagen);
-                        pbxPayroll.Image = Image.FromFile(rutaImagen);
-                        // Show Employee's Name in both textboxes
-                        txtName.Text = dgvAddEmployee.Rows[e.RowIndex].Cells[0].Value.ToString();
-                        txtNamePayroll.Text = dgvAddEmployee.Rows[e.RowIndex].Cells[0].Value.ToString();
-                        // Show Employee's Salary per Hour in both Numeric Controls
-                        numericSalary.Value = Convert.ToDecimal(dgvAddEmployee.Rows[e.RowIndex].Cells[2].Value);
-                        numericSalaryPayroll.Value = Convert.ToDecimal(dgvAddEmployee.Rows[e.RowIndex].Cells[2].Value);
-                        lblDepartmentPayroll.Text = dgvAddEmployee.Rows[e.RowIndex].Cells[1].Value.ToString();
+                    // Get Image Path
+                    string rutaImagen = dgvAddEmployee.Rows[e.RowIndex].Cells[3].Value.ToString();
+                    // Show the image in both picture boxes
+                    pbxEmployee.Image = Image.FromFile(rutaImagen);
+                    pbxPayroll.Image = Image.FromFile(rutaImagen);
+                    // Show Employee's Name in both textboxes
+                    txtName.Text = dgvAddEmployee.Rows[e.RowIndex].Cells[0].Value.ToString();
+                    txtNamePayroll.Text = dgvAddEmployee.Rows[e.RowIndex].Cells[0].Value.ToString();
+                    // Show Employee's Salary per Hour in both Numeric Controls
+                    numericSalary.Value = Convert.ToDecimal(dgvAddEmployee.Rows[e.RowIndex].Cells[2].Value);
+                    numericSalaryPayroll.Value = Convert.ToDecimal(dgvAddEmployee.Rows[e.RowIndex].Cells[2].Value);
+                    lblDepartmentPayroll.Text = dgvAddEmployee.Rows[e.RowIndex].Cells[1].Value.ToString();
                     numericHours.Value = 0;
                     numericRestDay.Value = 0;
                     numericHoliday.Value = 0;
@@ -188,8 +220,8 @@ namespace nominaApp
                 }
 
             }
-                catch (Exception)
-                {
+            catch (Exception)
+            {
                 txtName.Text = string.Empty;
                 numericSalary.Value = 0;
                 for (int i = 0; i < this.checkedDepartment.Items.Count; i++)
@@ -203,10 +235,9 @@ namespace nominaApp
                 lblDepartmentPayroll.Text = string.Empty;
                 pbxPayroll.Image = null;
                 MessageBox.Show("Unable to show Employee's Info");
-                }
+            }
 
         }
-
         /// <summary>
         /// Delete DataGridView Row
         /// </summary>
@@ -216,14 +247,14 @@ namespace nominaApp
         {
 
             DialogResult dr = MessageBox.Show("Would you like to delete this row?", "Delete Row", MessageBoxButtons.YesNo);
-                switch (dr)
+            switch (dr)
             {
                 case DialogResult.Yes:
                     try
                     {
                         DataGridViewRow selectedrow = dgvAddEmployee.Rows[e.RowIndex];// Get selected row's index 
                         dgvAddEmployee.Rows.Remove(selectedrow);
-                        txtName.Text = string.Empty;txtNamePayroll.Text = string.Empty;
+                        txtName.Text = string.Empty; txtNamePayroll.Text = string.Empty;
                         numericSalary.Value = 0;
                         numericSalaryPayroll.Value = 0;
                         for (int i = 0; i < this.checkedDepartment.Items.Count; i++)
@@ -242,76 +273,8 @@ namespace nominaApp
                     }
                     break;
                 case DialogResult.No:
-                    break; 
+                    break;
             }
-        }
-        /// <summary>
-        /// Calculate Payroll
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnCalculate_Click(object sender, EventArgs e)
-        {
-            Employee emp;
-            emp = new Employee();
-            emp.Name = txtNamePayroll.Text;
-            emp.Salary = numericSalaryPayroll.Value;
-            emp.Department = lblDepartmentPayroll.Text;
-            emp.CalcularBono();
-            
-            decimal Total = numericHours.Value * numericSalaryPayroll.Value;
-            Total += numericRestDay.Value * 2 * numericSalaryPayroll.Value;
-            Total += numericHoliday.Value * 2 * numericSalaryPayroll.Value;
-            decimal bonusTotal = emp.Bono * numericHours.Value;
-            numericBonus.Value = bonusTotal;
-            Total += bonusTotal;
-            numericPerceptions.Value = Total;
-            Total -= emp.Salary * numericAbsence.Value;
-            Total -= numericDiscount.Value;
-            decimal deductions = (numericAbsence.Value * emp.Salary) + numericDiscount.Value;
-            numericDeductions.Value = deductions;
-            numericPay.Value = Total;
-        }
-
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            CloseWebCam();
-            // Get file path where data is saved.
-            string filePath = "datos.csv";
-            
-            using (StreamWriter writer = new StreamWriter(filePath))
-            {
-                // Write headers on the first line.
-                for (int i = 0; i < dgvAddEmployee.Columns.Count; i++)
-                {
-                    writer.Write(dgvAddEmployee.Columns[i].HeaderText);
-                    if (i < dgvAddEmployee.Columns.Count - 1)
-                    {
-                        writer.Write(",");
-                    }
-                }
-                writer.WriteLine();
-
-                // Write the content of each row on a different line per row.
-                foreach (DataGridViewRow row in dgvAddEmployee.Rows)
-                {
-                    for (int i = 0; i < dgvAddEmployee.Columns.Count; i++)
-                    {
-                        if (!row.IsNewRow)
-                        {
-                            writer.Write(row.Cells[i].Value.ToString());
-                        }
-
-                        if (i < dgvAddEmployee.Columns.Count - 1)
-                        {
-                            writer.Write(",");
-                        }
-                    }
-                    writer.WriteLine();
-                }
-                writer.Close();
-            }
-            
         }
         /// <summary>
         /// Delete Employee from the DataGridView using Suprimir | Delete Key.
@@ -357,26 +320,49 @@ namespace nominaApp
 
             }
         }
-        /// <summary>
-        /// Select only 1 item in checkedDepartment Control.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void checkedDepartment_ItemCheck(object sender, ItemCheckEventArgs e)
+        #endregion
+
+        #region Form1
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // If the user is selecting a new item, deseleccionar cualquier otro elemento
-            if (e.NewValue == CheckState.Checked)
+            CloseWebCam();
+            // Get file path where data is saved.
+            string filePath = "datos.csv";
+
+            using (StreamWriter writer = new StreamWriter(filePath))
             {
-                for (int i = 0; i < checkedDepartment.Items.Count; ++i)
+                // Write headers on the first line.
+                for (int i = 0; i < dgvAddEmployee.Columns.Count; i++)
                 {
-                    if (i != e.Index && checkedDepartment.GetItemChecked(i))
+                    writer.Write(dgvAddEmployee.Columns[i].HeaderText);
+                    if (i < dgvAddEmployee.Columns.Count - 1)
                     {
-                        checkedDepartment.SetItemChecked(i, false);
+                        writer.Write(",");
                     }
                 }
-            }
-        }
+                writer.WriteLine();
 
+                // Write the content of each row on a different line per row.
+                foreach (DataGridViewRow row in dgvAddEmployee.Rows)
+                {
+                    for (int i = 0; i < dgvAddEmployee.Columns.Count; i++)
+                    {
+                        if (!row.IsNewRow)
+                        {
+                            writer.Write(row.Cells[i].Value.ToString());
+                        }
+
+                        if (i < dgvAddEmployee.Columns.Count - 1)
+                        {
+                            writer.Write(",");
+                        }
+                    }
+                    writer.WriteLine();
+                }
+                writer.Close();
+            }
+
+        }
         private void Form1_Load(object sender, EventArgs e)
         {
             // Obtener la ruta del archivo donde se guardaron los datos
@@ -419,6 +405,7 @@ namespace nominaApp
                     reader.Close();
                 }
             }
+
             // Read counter value from txt file if the file exists.
             if (File.Exists(counterFilePath))
             {
@@ -432,6 +419,29 @@ namespace nominaApp
                 }
             }
             LoadDevices();
+        }
+        #endregion
+
+        #region Video Input Device
+        /// <summary>
+        /// Load Video Input Devices to show in ComboBox1.
+        /// </summary>
+        public void LoadDevices()
+        {
+            // Collection of Video Input Devices.
+            myDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            if (myDevices.Count > 0)
+            {
+                devicesExist = true;
+                for (int i = 0; i < myDevices.Count; i++)
+                    // Add each item from the collection (myDevices) to ComboBox1.
+                    comboBox1.Items.Add(myDevices[i].Name.ToString());
+                // Show default device in ComboBox1.
+                comboBox1.Text = myDevices[0].Name.ToString();
+
+            }
+            else
+                devicesExist = false;
         }
         /// <summary>
         /// Start Recording using VideoInputDevice selected in comboBox1.
@@ -497,5 +507,6 @@ namespace nominaApp
                 pbxEmployee.Image = Image.FromFile(photoPath);
             }
         }
+        #endregion
     }
 }
