@@ -35,8 +35,8 @@ namespace nominaApp
             this.WindowState = FormWindowState.Maximized;
             ofd = new OpenFileDialog();
             // Select the entire row when clicking on any cell
-            dgvAddEmployee.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvAddEmployee.RowHeadersVisible = false;
+            dgvRecibos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvRecibos.RowHeadersVisible = false;
             // Show Add Employee Menu everytime the app starts
             panelPayroll.Visible = false;
             imagesPath = @"C:\Users\andre\source\repos\nominaApp - Copy\nominaApp\bin\Debug\imagesPath";
@@ -87,14 +87,13 @@ namespace nominaApp
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void btnAdd_Click(object sender, EventArgs e)
-        {
+        {   
             Employee employee = new Employee(txtName.Text, numericSalary.Value, comboBox2.Text,
-            ofd.FileName, photoPath, dgvAddEmployee, txtName, numericSalary, comboBox2, pbxEmployee, ofd);
+            ofd.FileName, photoPath, dgvRecibos, txtName, numericSalary, comboBox2, pbxEmployee, ofd);
             photoPath = null;
             TotalPay();
-
         }
-
+        
         /// <summary>
         /// Calculate Payroll
         /// </summary>
@@ -116,16 +115,17 @@ namespace nominaApp
                 emp.Name = txtNamePayroll.Text;
                 emp.Salary = Convert.ToDecimal(lblSalaryPayrollValue.Text);
                 emp.Department = lblDepartmentPayroll.Text;
-                emp.CalcularBono(lblDepartmentPayroll.Text);
+                emp.CalcularBono(emp.Department);
 
                 decimal Total = numericHours.Value * Convert.ToDecimal(lblSalaryPayrollValue.Text);
-                Total += numericRestDay.Value * 2 * Convert.ToDecimal(lblSalaryPayrollValue.Text);
-                Total += numericHoliday.Value * 2 * Convert.ToDecimal(lblSalaryPayrollValue.Text);
-                decimal bonusTotal = emp.Bono * numericHours.Value;
-                lblBonusValue.Text = bonusTotal.ToString();
-                lblBonusValue.Visible = true;
+                decimal bonoTotal = emp.Bono * Total;
+                    Total += bonoTotal;
+                    Total += (numericRestDay.Value * 2) * Convert.ToDecimal(lblSalaryPayrollValue.Text);
+                Total += (numericHoliday.Value * 2) * Convert.ToDecimal(lblSalaryPayrollValue.Text);
+                    
+                    lblBonusValue.Text = bonoTotal.ToString();
+                    lblBonusValue.Visible = true;
                 lblBonus.Visible = true;
-                Total += bonusTotal;
                 lblTotalPerceptionsValue.Text = Total.ToString();
                 lblTotalPerceptionsValue.Visible = true;
                 lblPerceptions.Visible = true;
@@ -135,8 +135,30 @@ namespace nominaApp
                 lblTotalDeductionsValue.Text = deductions.ToString();
                 lblTotalDeductionsValue.Visible = true;
                 lblDeductions.Visible = true;
+                    DataGridViewRow row = dgvRecibos.SelectedRows[0];
+                    if (dgvRecibos.SelectedRows.Count > 0)
+                    {
+                        DataGridViewRow selectedRow = dgvRecibos.SelectedRows[0];
 
-                dgvAddEmployee.Rows[dgvAddEmployee.SelectedRows[0].Index].Cells[4].Value = Total;
+                        // Actualizar los valores de la fila seleccionada
+                        selectedRow.Cells[0].Value = txtNamePayroll.Text;
+                        selectedRow.Cells[1].Value = lblDepartmentPayroll.Text;
+                        selectedRow.Cells[2].Value = lblSalaryPayrollValue.Text;
+                        selectedRow.Cells[3].Value = row.Cells[3].Value.ToString();
+                        selectedRow.Cells[4].Value = Total;
+                        selectedRow.Cells[5].Value = numericHours.Value.ToString();
+                        selectedRow.Cells[6].Value = numericRestDay.Value.ToString();
+                        selectedRow.Cells[7].Value = numericHoliday.Value.ToString();
+                        selectedRow.Cells[8].Value = lblBonusValue.Text;
+                        selectedRow.Cells[9].Value = lblTotalPerceptionsValue.Text;
+                        selectedRow.Cells[10].Value = numericAbsence.Value.ToString();
+                        selectedRow.Cells[11].Value = numericDiscount.Value.ToString();
+                        selectedRow.Cells[12].Value = lblTotalDeductionsValue.Text;
+
+
+                        // Refrescar la visualización del DataGridView
+                        dgvRecibos.Refresh();
+                    }
                     TotalPay();
                 return;
                 case DialogResult.No:
@@ -146,8 +168,28 @@ namespace nominaApp
         }
         #endregion
 
-        #region dgvAddEmployee
-        private void dgvAddEmployee_SelectionChanged(object sender, EventArgs e)
+        #region dgvRecibos
+        private void EliminarFilasVacias(DataGridView dataGridView)
+        {
+            for (int i = dataGridView.Rows.Count - 1; i >= 0; i--)
+            {
+                DataGridViewRow row = dataGridView.Rows[i];
+                if (row.Cells[0].Value == null || string.IsNullOrWhiteSpace(row.Cells[0].Value.ToString()))
+                {
+                    try
+                    {
+                        dataGridView.Rows.Remove(row);
+
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                    }
+                }
+            }
+        }
+
+        private void dgvRecibos_SelectionChanged(object sender, EventArgs e)
         {
             txtNamePayroll.Text = string.Empty;
             lblSalaryPayrollValue.Text = "";
@@ -246,7 +288,7 @@ namespace nominaApp
             CultureInfo cultureInfo = new CultureInfo("es-MX");
             decimal celda;
             decimal suma = 0;
-            foreach (DataGridViewRow row in dgvAddEmployee.Rows)
+            foreach (DataGridViewRow row in dgvRecibos.Rows)
             {
                 if(row.Cells[4].Value != "")
                 {
@@ -258,8 +300,8 @@ namespace nominaApp
             lblPayValue.Text = suma.ToString("C", cultureInfo);
             lblNumeroEnLetras.Text = toText(Convert.ToDouble(suma)) + " PESOS.";
         }
-        
-        private void dgvAddEmployee_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+
+        private void dgvRecibos_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
             TotalPay();
         }
@@ -268,35 +310,34 @@ namespace nominaApp
         /// </summary>
         /// <param name="sender">DataGridView</param>
         /// <param name="e">Celda de la DataGridView</param>
-        public void dgvAddEmployee_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        private void dgvRecibos_CellDoubleClick_1(object sender, DataGridViewCellEventArgs e)
         {
-
             try
             {
-                    // Get Image Path
-                    string rutaImagen = dgvAddEmployee.Rows[e.RowIndex].Cells[3].Value.ToString();
-                    // Show the image in both picture boxes
-                    pbxEmployee.Image = Image.FromFile(rutaImagen);
-                    pbxPayroll.Image = Image.FromFile(rutaImagen);
-                    // Show Employee's Name in both textboxes
-                    txtName.Text = dgvAddEmployee.Rows[e.RowIndex].Cells[0].Value.ToString();
-                    txtNamePayroll.Text = dgvAddEmployee.Rows[e.RowIndex].Cells[0].Value.ToString();
-                    // Show Employee's Salary per Hour in both Numeric Controls
-                    numericSalary.Value = Convert.ToDecimal(dgvAddEmployee.Rows[e.RowIndex].Cells[2].Value);
-                lblSalaryPayrollValue.Text = dgvAddEmployee.Rows[e.RowIndex].Cells[2].Value.ToString();
-                    lblDepartmentPayroll.Text = dgvAddEmployee.Rows[e.RowIndex].Cells[1].Value.ToString();
-                    numericHours.Value = 0;
-                    numericRestDay.Value = 0;
-                    numericHoliday.Value = 0;
+                // Get Image Path
+                string rutaImagen = dgvRecibos.Rows[e.RowIndex].Cells[3].Value.ToString();
+                // Show the image in both picture boxes
+                pbxEmployee.Image = Image.FromFile(rutaImagen);
+                pbxPayroll.Image = Image.FromFile(rutaImagen);
+                // Show Employee's Name in both textboxes
+                txtName.Text = dgvRecibos.Rows[e.RowIndex].Cells[0].Value.ToString();
+                txtNamePayroll.Text = dgvRecibos.Rows[e.RowIndex].Cells[0].Value.ToString();
+                // Show Employee's Salary per Hour in both Numeric Controls
+                numericSalary.Value = Convert.ToDecimal(dgvRecibos.Rows[e.RowIndex].Cells[2].Value);
+                lblSalaryPayrollValue.Text = dgvRecibos.Rows[e.RowIndex].Cells[2].Value.ToString();
+                lblDepartmentPayroll.Text = dgvRecibos.Rows[e.RowIndex].Cells[1].Value.ToString();
+                numericHours.Value = 0;
+                numericRestDay.Value = 0;
+                numericHoliday.Value = 0;
                 lblBonusValue.Text = string.Empty;
-                    lblTotalPerceptionsValue.Text = string.Empty;
-                    numericAbsence.Value = 0;
-                    numericDiscount.Value = 0;
-                    lblTotalDeductionsValue.Text = string.Empty;
+                lblTotalPerceptionsValue.Text = string.Empty;
+                numericAbsence.Value = 0;
+                numericDiscount.Value = 0;
+                lblTotalDeductionsValue.Text = string.Empty;
             }
             catch (Exception)
             {
-                dgvAddEmployee_SelectionChanged(sender,e);
+                dgvRecibos_SelectionChanged(sender, e);
                 MessageBox.Show("Unable to show Employee's Info");
             }
         }
@@ -305,9 +346,11 @@ namespace nominaApp
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void dgvAddEmployee_KeyDown(object sender, KeyEventArgs e)
+        private void dgvRecibos_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Delete) {
+
+            if (e.KeyCode == Keys.Delete)
+            {
                 DialogResult dr = MessageBox.Show("Would you like to delete this row?", "Delete Row", MessageBoxButtons.YesNo);
                 switch (dr)
                 {
@@ -315,9 +358,9 @@ namespace nominaApp
                         try
                         {
                             // Get selected Row.
-                            DataGridViewRow selectedRow = dgvAddEmployee.SelectedRows[0];
+                            DataGridViewRow selectedRow = dgvRecibos.SelectedRows[0];
                             // Remove the selected Row.
-                            dgvAddEmployee.Rows.Remove(selectedRow); 
+                            dgvRecibos.Rows.Remove(selectedRow);
                             // Clear controls.
                             txtName.Text = string.Empty; txtNamePayroll.Text = string.Empty;
                             numericSalary.Value = 0;
@@ -344,54 +387,62 @@ namespace nominaApp
 
             }
         }
-        
+
         #endregion
 
         #region Form1
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             CloseWebCam();
-            // Get file path where data is saved.
-            string filePath = "datos.csv";
-
-            using (StreamWriter writer = new StreamWriter(filePath))
-            {
-                // Write headers on the first line.
-                for (int i = 0; i < dgvAddEmployee.Columns.Count; i++)
-                {
-                    writer.Write(dgvAddEmployee.Columns[i].HeaderText);
-                    if (i < dgvAddEmployee.Columns.Count - 1)
-                    {
-                        writer.Write(",");
-                    }
-                }
-                writer.WriteLine();
-
-                // Write the content of each row on a different line per row.
-                foreach (DataGridViewRow row in dgvAddEmployee.Rows)
-                {
-                    for (int i = 0; i < dgvAddEmployee.Columns.Count; i++)
-                    {
-                        if (!row.IsNewRow)
-                        {
-                            writer.Write(row.Cells[i].Value.ToString());
-                        }
-
-                        if (i < dgvAddEmployee.Columns.Count - 1)
-                        {
-                            writer.Write(",");
-                        }
-                    }
-                    writer.WriteLine();
-                }
-                writer.Close();
-            }
-
+            SaveDGVRecibos();
         }
         private void Form1_Load(object sender, EventArgs e)
         {
+            LoadDGVRecibos();
+            GetImageCounter();
+            LoadDepartments();
+            LoadDevices();
+            TotalPay();
+            EliminarFilasVacias(dgvRecibos);
+        }
+        
+        public void LoadDepartments()
+        {
+            // Add every existing Department in ComboBox2.
+            string departamentos = "departamentos.txt";
+            if (File.Exists(departamentos))
+            {
+                StreamReader reader = new StreamReader(departamentos);
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        string[] values = line.Split(',');
+                        comboBox2.Items.Add(values[0]);
+                    }
+                }
+            }
+            comboBox2.Text = comboBox2.Items[0].ToString();
+        }
+        public void GetImageCounter()
+        {
+            // Read counter value from txt file if the file exists.
+            if (File.Exists(counterFilePath))
+            {
+                string counterString = File.ReadAllText(counterFilePath);
+                int counterValue;
+                // Convert string to int value.
+                if (int.TryParse(counterString, out counterValue))
+                {
+                    // Asign value to variable.
+                    imageCounter = counterValue;
+                }
+            }
+        }
+        public void LoadDGVRecibos()
+        {
             // Obtener la ruta del archivo donde se guardaron los datos
-            string filePath = "datos.csv";
+            string filePath = "datosDGVRecibos.csv";
 
             // Comprobar si el archivo existe
             if (File.Exists(filePath))
@@ -408,7 +459,7 @@ namespace nominaApp
                         // Agregar las columnas al DataGridView
                         foreach (string header in headers)
                         {
-                            dgvAddEmployee.Columns.Add(header, header);
+                            dgvRecibos.Columns.Add(header, header);
                         }
                     }
 
@@ -425,42 +476,52 @@ namespace nominaApp
                         }
 
                         // Agregar la fila al DataGridView
-                        dgvAddEmployee.Rows.Add(row);
+                        dgvRecibos.Rows.Add(row);
                     }
                     reader.Close();
                 }
             }
+        }
+        public void SaveDGVRecibos()
+        {
+            string filePath = "datosDGVRecibos.csv";
 
-            // Read counter value from txt file if the file exists.
-            if (File.Exists(counterFilePath))
+            // Crear un StreamWriter para escribir en el archivo CSV
+            using (StreamWriter writer = new StreamWriter(filePath))
             {
-                string counterString = File.ReadAllText(counterFilePath);
-                int counterValue;
-                // Convert string to int value.
-                if (int.TryParse(counterString, out counterValue))
+                // Escribir los nombres de las columnas en la primera línea
+                for (int i = 0; i < dgvRecibos.Columns.Count; i++)
                 {
-                    // Asign value to variable.
-                    imageCounter = counterValue;
-                }
-            }
-            // Add every existing Department in ComboBox2.
-            string departamentos = "departamentos.txt";
-            if (File.Exists(departamentos))
-            {
-                StreamReader reader = new StreamReader(departamentos);
-                {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
+                    writer.Write(dgvRecibos.Columns[i].HeaderText);
+                    if (i < dgvRecibos.Columns.Count - 1)
                     {
-                        string[] values = line.Split(',');
-                        comboBox2.Items.Add(values[0]);
+                        writer.Write(",");
                     }
                 }
+                writer.WriteLine();
+
+                // Escribir el contenido de cada fila en líneas separadas
+                foreach (DataGridViewRow row in dgvRecibos.Rows)
+                {
+                    for (int i = 0; i < dgvRecibos.Columns.Count; i++)
+                    {
+                        if (!row.IsNewRow)
+                        {
+                            writer.Write(row.Cells[i].Value);
+                        }
+
+                        if (i < dgvRecibos.Columns.Count - 1)
+                        {
+                            writer.Write(",");
+                        }
+                    }
+                    writer.WriteLine();
+                }
+
+                writer.Close();
             }
-            comboBox2.Text = comboBox2.Items[0].ToString();
-            LoadDevices();
-            TotalPay();
         }
+
         #endregion
 
         #region Video Input Device
@@ -588,6 +649,10 @@ namespace nominaApp
                 lblFace4.Visible = false;
             }
         }
+
+
+
+
         #endregion
 
         

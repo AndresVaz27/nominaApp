@@ -8,10 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
-
-
-
-
 namespace nominaApp
 {
 
@@ -66,7 +62,7 @@ namespace nominaApp
                 if (datos[0].Trim() == departamento)
                 {
                     decimal porcentaje = decimal.Parse(datos[1].Trim());
-                    return Bono = Salary * porcentaje;
+                    return Bono = porcentaje;
                 }
             }
 
@@ -75,7 +71,7 @@ namespace nominaApp
 
         public Employee(string name, decimal salary, string department, string imagePath, 
             string photoPath, DataGridView dataGridView, TextBox nameTextBox, NumericUpDown salaryNumericUpDown, 
-            ComboBox comboBox, PictureBox employeePictureBox, OpenFileDialog openFileDialog)
+            ComboBox comboBox, PictureBox employeePictureBox, OpenFileDialog openFileDialog )
         {
            if (name == "")
             {
@@ -114,11 +110,12 @@ namespace nominaApp
             this.EmployeePictureBox = employeePictureBox;
             this.OpenFileDialog = openFileDialog;
 
-            decimal pay = Salary * 40;
-            pay = CalcularBono(department) + pay;
+            decimal salaryXhours = Salary * 40;
+            decimal bono = salaryXhours * CalcularBono(this.Department);
+            decimal pay = salaryXhours + bono;
 
             // Agregar Row a la DataGridView con la info del empleado.
-            this.DataGridView.Rows.Add(this.Name, this.Department, this.Salary, this.ImagePath, pay);
+            this.DataGridView.Rows.Add(this.Name, this.Department, this.Salary, this.ImagePath, pay,40,0,0, bono, pay,0,0,0);
             MessageBox.Show(ToString());
             // Clear Controls
             this.NameTextBox.Clear();

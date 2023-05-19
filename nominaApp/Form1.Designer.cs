@@ -38,13 +38,17 @@
             this.numericSalary = new System.Windows.Forms.NumericUpDown();
             this.btnAdd = new System.Windows.Forms.Button();
             this.panelAddEmployee = new System.Windows.Forms.Panel();
+            this.lblFace3 = new System.Windows.Forms.Label();
+            this.lblFace1 = new System.Windows.Forms.Label();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.btnTakePhoto = new System.Windows.Forms.Button();
             this.btnStartCam = new System.Windows.Forms.Button();
             this.lblDepartment = new System.Windows.Forms.Label();
-            this.dgvAddEmployee = new System.Windows.Forms.DataGridView();
+            this.lblFace2 = new System.Windows.Forms.Label();
+            this.lblFace4 = new System.Windows.Forms.Label();
             this.panelPayroll = new System.Windows.Forms.Panel();
+            this.lblSalaryPayrollValue = new System.Windows.Forms.Label();
             this.lblBonusValue = new System.Windows.Forms.Label();
             this.lblTotalDeductionsValue = new System.Windows.Forms.Label();
             this.lblTotalPerceptionsValue = new System.Windows.Forms.Label();
@@ -70,15 +74,10 @@
             this.lblPay = new System.Windows.Forms.Label();
             this.lblPayValue = new System.Windows.Forms.Label();
             this.lblNumeroEnLetras = new System.Windows.Forms.Label();
-            this.lblSalaryPayrollValue = new System.Windows.Forms.Label();
-            this.lblFace1 = new System.Windows.Forms.Label();
-            this.lblFace3 = new System.Windows.Forms.Label();
-            this.lblFace2 = new System.Windows.Forms.Label();
-            this.lblFace4 = new System.Windows.Forms.Label();
+            this.dgvRecibos = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.pbxEmployee)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericSalary)).BeginInit();
             this.panelAddEmployee.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvAddEmployee)).BeginInit();
             this.panelPayroll.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericDiscount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericAbsence)).BeginInit();
@@ -86,6 +85,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericRestDay)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericHours)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbxPayroll)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvRecibos)).BeginInit();
             this.SuspendLayout();
             // 
             // btnPayrollMenu
@@ -212,6 +212,30 @@
             this.panelAddEmployee.Size = new System.Drawing.Size(1234, 365);
             this.panelAddEmployee.TabIndex = 10;
             // 
+            // lblFace3
+            // 
+            this.lblFace3.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.lblFace3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFace3.Location = new System.Drawing.Point(612, 183);
+            this.lblFace3.Name = "lblFace3";
+            this.lblFace3.Size = new System.Drawing.Size(222, 77);
+            this.lblFace3.TabIndex = 12;
+            this.lblFace3.Text = "Center your face in here.";
+            this.lblFace3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblFace3.Visible = false;
+            // 
+            // lblFace1
+            // 
+            this.lblFace1.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.lblFace1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFace1.Location = new System.Drawing.Point(612, 60);
+            this.lblFace1.Name = "lblFace1";
+            this.lblFace1.Size = new System.Drawing.Size(222, 53);
+            this.lblFace1.TabIndex = 11;
+            this.lblFace1.Text = "Center your face in here.";
+            this.lblFace1.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.lblFace1.Visible = false;
+            // 
             // comboBox2
             // 
             this.comboBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -263,23 +287,26 @@
             this.lblDepartment.TabIndex = 10;
             this.lblDepartment.Text = "Department";
             // 
-            // dgvAddEmployee
+            // lblFace2
             // 
-            this.dgvAddEmployee.AllowUserToDeleteRows = false;
-            this.dgvAddEmployee.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.dgvAddEmployee.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvAddEmployee.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvAddEmployee.Location = new System.Drawing.Point(12, 389);
-            this.dgvAddEmployee.Name = "dgvAddEmployee";
-            this.dgvAddEmployee.ReadOnly = true;
-            this.dgvAddEmployee.RowHeadersWidth = 51;
-            this.dgvAddEmployee.RowTemplate.Height = 24;
-            this.dgvAddEmployee.Size = new System.Drawing.Size(1508, 414);
-            this.dgvAddEmployee.TabIndex = 10;
-            this.dgvAddEmployee.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvAddEmployee_CellDoubleClick);
-            this.dgvAddEmployee.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dgvAddEmployee_RowsRemoved);
-            this.dgvAddEmployee.SelectionChanged += new System.EventHandler(this.dgvAddEmployee_SelectionChanged);
-            this.dgvAddEmployee.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvAddEmployee_KeyDown);
+            this.lblFace2.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.lblFace2.BackColor = System.Drawing.Color.Transparent;
+            this.lblFace2.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFace2.Location = new System.Drawing.Point(778, 113);
+            this.lblFace2.Name = "lblFace2";
+            this.lblFace2.Size = new System.Drawing.Size(57, 142);
+            this.lblFace2.TabIndex = 13;
+            this.lblFace2.Visible = false;
+            // 
+            // lblFace4
+            // 
+            this.lblFace4.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.lblFace4.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFace4.Location = new System.Drawing.Point(610, 113);
+            this.lblFace4.Name = "lblFace4";
+            this.lblFace4.Size = new System.Drawing.Size(53, 142);
+            this.lblFace4.TabIndex = 14;
+            this.lblFace4.Visible = false;
             // 
             // panelPayroll
             // 
@@ -311,6 +338,14 @@
             this.panelPayroll.Name = "panelPayroll";
             this.panelPayroll.Size = new System.Drawing.Size(1240, 371);
             this.panelPayroll.TabIndex = 11;
+            // 
+            // lblSalaryPayrollValue
+            // 
+            this.lblSalaryPayrollValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSalaryPayrollValue.Location = new System.Drawing.Point(6, 197);
+            this.lblSalaryPayrollValue.Name = "lblSalaryPayrollValue";
+            this.lblSalaryPayrollValue.Size = new System.Drawing.Size(162, 29);
+            this.lblSalaryPayrollValue.TabIndex = 29;
             // 
             // lblBonusValue
             // 
@@ -579,58 +614,26 @@
             this.lblNumeroEnLetras.TabIndex = 26;
             this.lblNumeroEnLetras.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblSalaryPayrollValue
+            // dgvRecibos
             // 
-            this.lblSalaryPayrollValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSalaryPayrollValue.Location = new System.Drawing.Point(6, 197);
-            this.lblSalaryPayrollValue.Name = "lblSalaryPayrollValue";
-            this.lblSalaryPayrollValue.Size = new System.Drawing.Size(162, 29);
-            this.lblSalaryPayrollValue.TabIndex = 29;
-            // 
-            // lblFace1
-            // 
-            this.lblFace1.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.lblFace1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFace1.Location = new System.Drawing.Point(612, 60);
-            this.lblFace1.Name = "lblFace1";
-            this.lblFace1.Size = new System.Drawing.Size(222, 53);
-            this.lblFace1.TabIndex = 11;
-            this.lblFace1.Text = "Center your face in here.";
-            this.lblFace1.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.lblFace1.Visible = false;
-            // 
-            // lblFace3
-            // 
-            this.lblFace3.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.lblFace3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFace3.Location = new System.Drawing.Point(612, 183);
-            this.lblFace3.Name = "lblFace3";
-            this.lblFace3.Size = new System.Drawing.Size(222, 77);
-            this.lblFace3.TabIndex = 12;
-            this.lblFace3.Text = "Center your face in here.";
-            this.lblFace3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.lblFace3.Visible = false;
-            // 
-            // lblFace2
-            // 
-            this.lblFace2.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.lblFace2.BackColor = System.Drawing.Color.Transparent;
-            this.lblFace2.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFace2.Location = new System.Drawing.Point(778, 113);
-            this.lblFace2.Name = "lblFace2";
-            this.lblFace2.Size = new System.Drawing.Size(57, 142);
-            this.lblFace2.TabIndex = 13;
-            this.lblFace2.Visible = false;
-            // 
-            // lblFace4
-            // 
-            this.lblFace4.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.lblFace4.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFace4.Location = new System.Drawing.Point(610, 113);
-            this.lblFace4.Name = "lblFace4";
-            this.lblFace4.Size = new System.Drawing.Size(53, 142);
-            this.lblFace4.TabIndex = 14;
-            this.lblFace4.Visible = false;
+            this.dgvRecibos.AllowUserToDeleteRows = false;
+            this.dgvRecibos.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.dgvRecibos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvRecibos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvRecibos.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
+            this.dgvRecibos.Location = new System.Drawing.Point(12, 389);
+            this.dgvRecibos.Name = "dgvRecibos";
+            this.dgvRecibos.ReadOnly = true;
+            this.dgvRecibos.RowHeadersVisible = false;
+            this.dgvRecibos.RowHeadersWidth = 51;
+            this.dgvRecibos.RowTemplate.Height = 24;
+            this.dgvRecibos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvRecibos.Size = new System.Drawing.Size(1508, 414);
+            this.dgvRecibos.TabIndex = 27;
+            this.dgvRecibos.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvRecibos_CellDoubleClick_1);
+            this.dgvRecibos.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dgvRecibos_RowsRemoved);
+            this.dgvRecibos.SelectionChanged += new System.EventHandler(this.dgvRecibos_SelectionChanged);
+            this.dgvRecibos.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvRecibos_KeyDown);
             // 
             // Form1
             // 
@@ -639,10 +642,10 @@
             this.ClientSize = new System.Drawing.Size(1532, 853);
             this.Controls.Add(this.lblNumeroEnLetras);
             this.Controls.Add(this.lblPayValue);
-            this.Controls.Add(this.dgvAddEmployee);
             this.Controls.Add(this.btnAddEmployee);
             this.Controls.Add(this.lblPay);
             this.Controls.Add(this.btnPayrollMenu);
+            this.Controls.Add(this.dgvRecibos);
             this.Controls.Add(this.panelAddEmployee);
             this.Controls.Add(this.panelPayroll);
             this.Cursor = System.Windows.Forms.Cursors.Arrow;
@@ -656,7 +659,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericSalary)).EndInit();
             this.panelAddEmployee.ResumeLayout(false);
             this.panelAddEmployee.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvAddEmployee)).EndInit();
             this.panelPayroll.ResumeLayout(false);
             this.panelPayroll.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericDiscount)).EndInit();
@@ -665,6 +667,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericRestDay)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericHours)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbxPayroll)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvRecibos)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -702,7 +705,6 @@
         private System.Windows.Forms.Label lblDepartment;
         public System.Windows.Forms.TextBox txtName;
         public System.Windows.Forms.NumericUpDown numericSalary;
-        public System.Windows.Forms.DataGridView dgvAddEmployee;
         public System.Windows.Forms.PictureBox pbxEmployee;
         private System.Windows.Forms.Label lblDepartmentPayroll;
         private System.Windows.Forms.Button btnTakePhoto;
@@ -719,6 +721,7 @@
         private System.Windows.Forms.Label lblFace2;
         private System.Windows.Forms.Label lblFace3;
         private System.Windows.Forms.Label lblFace1;
+        public System.Windows.Forms.DataGridView dgvRecibos;
     }
 }
 
