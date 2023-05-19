@@ -63,7 +63,6 @@
             this.lblHoliday = new System.Windows.Forms.Label();
             this.lblRestDay = new System.Windows.Forms.Label();
             this.lblHours = new System.Windows.Forms.Label();
-            this.numericSalaryPayroll = new System.Windows.Forms.NumericUpDown();
             this.pbxPayroll = new System.Windows.Forms.PictureBox();
             this.lblSalaryPayroll = new System.Windows.Forms.Label();
             this.lblNamePayroll = new System.Windows.Forms.Label();
@@ -71,6 +70,11 @@
             this.lblPay = new System.Windows.Forms.Label();
             this.lblPayValue = new System.Windows.Forms.Label();
             this.lblNumeroEnLetras = new System.Windows.Forms.Label();
+            this.lblSalaryPayrollValue = new System.Windows.Forms.Label();
+            this.lblFace1 = new System.Windows.Forms.Label();
+            this.lblFace3 = new System.Windows.Forms.Label();
+            this.lblFace2 = new System.Windows.Forms.Label();
+            this.lblFace4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pbxEmployee)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericSalary)).BeginInit();
             this.panelAddEmployee.SuspendLayout();
@@ -81,7 +85,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericHoliday)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericRestDay)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericHours)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericSalaryPayroll)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbxPayroll)).BeginInit();
             this.SuspendLayout();
             // 
@@ -140,7 +143,7 @@
             // btnBrowse
             // 
             this.btnBrowse.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.btnBrowse.Location = new System.Drawing.Point(690, 230);
+            this.btnBrowse.Location = new System.Drawing.Point(676, 281);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(101, 46);
             this.btnBrowse.TabIndex = 8;
@@ -152,9 +155,9 @@
             // 
             this.pbxEmployee.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.pbxEmployee.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pbxEmployee.Location = new System.Drawing.Point(592, 43);
+            this.pbxEmployee.Location = new System.Drawing.Point(607, 45);
             this.pbxEmployee.Name = "pbxEmployee";
-            this.pbxEmployee.Size = new System.Drawing.Size(302, 180);
+            this.pbxEmployee.Size = new System.Drawing.Size(230, 220);
             this.pbxEmployee.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbxEmployee.TabIndex = 7;
             this.pbxEmployee.TabStop = false;
@@ -188,18 +191,22 @@
             // panelAddEmployee
             // 
             this.panelAddEmployee.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.panelAddEmployee.Controls.Add(this.lblFace3);
+            this.panelAddEmployee.Controls.Add(this.lblFace1);
             this.panelAddEmployee.Controls.Add(this.comboBox2);
             this.panelAddEmployee.Controls.Add(this.comboBox1);
             this.panelAddEmployee.Controls.Add(this.btnTakePhoto);
             this.panelAddEmployee.Controls.Add(this.btnStartCam);
             this.panelAddEmployee.Controls.Add(this.lblDepartment);
-            this.panelAddEmployee.Controls.Add(this.pbxEmployee);
             this.panelAddEmployee.Controls.Add(this.lblSalary);
             this.panelAddEmployee.Controls.Add(this.numericSalary);
             this.panelAddEmployee.Controls.Add(this.lblName);
             this.panelAddEmployee.Controls.Add(this.btnAdd);
             this.panelAddEmployee.Controls.Add(this.txtName);
             this.panelAddEmployee.Controls.Add(this.btnBrowse);
+            this.panelAddEmployee.Controls.Add(this.lblFace2);
+            this.panelAddEmployee.Controls.Add(this.lblFace4);
+            this.panelAddEmployee.Controls.Add(this.pbxEmployee);
             this.panelAddEmployee.Location = new System.Drawing.Point(149, 15);
             this.panelAddEmployee.Name = "panelAddEmployee";
             this.panelAddEmployee.Size = new System.Drawing.Size(1234, 365);
@@ -277,6 +284,7 @@
             // panelPayroll
             // 
             this.panelPayroll.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.panelPayroll.Controls.Add(this.lblSalaryPayrollValue);
             this.panelPayroll.Controls.Add(this.lblBonusValue);
             this.panelPayroll.Controls.Add(this.lblTotalDeductionsValue);
             this.panelPayroll.Controls.Add(this.lblTotalPerceptionsValue);
@@ -295,7 +303,6 @@
             this.panelPayroll.Controls.Add(this.lblHoliday);
             this.panelPayroll.Controls.Add(this.lblRestDay);
             this.panelPayroll.Controls.Add(this.lblHours);
-            this.panelPayroll.Controls.Add(this.numericSalaryPayroll);
             this.panelPayroll.Controls.Add(this.pbxPayroll);
             this.panelPayroll.Controls.Add(this.lblSalaryPayroll);
             this.panelPayroll.Controls.Add(this.lblNamePayroll);
@@ -308,7 +315,7 @@
             // lblBonusValue
             // 
             this.lblBonusValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBonusValue.Location = new System.Drawing.Point(275, 263);
+            this.lblBonusValue.Location = new System.Drawing.Point(437, 263);
             this.lblBonusValue.Name = "lblBonusValue";
             this.lblBonusValue.Size = new System.Drawing.Size(209, 29);
             this.lblBonusValue.TabIndex = 28;
@@ -326,7 +333,7 @@
             // lblTotalPerceptionsValue
             // 
             this.lblTotalPerceptionsValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTotalPerceptionsValue.Location = new System.Drawing.Point(510, 312);
+            this.lblTotalPerceptionsValue.Location = new System.Drawing.Point(672, 312);
             this.lblTotalPerceptionsValue.Name = "lblTotalPerceptionsValue";
             this.lblTotalPerceptionsValue.Size = new System.Drawing.Size(95, 29);
             this.lblTotalPerceptionsValue.TabIndex = 26;
@@ -334,7 +341,7 @@
             // lblDepartmentPayroll
             // 
             this.lblDepartmentPayroll.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDepartmentPayroll.Location = new System.Drawing.Point(29, 295);
+            this.lblDepartmentPayroll.Location = new System.Drawing.Point(220, 263);
             this.lblDepartmentPayroll.Name = "lblDepartmentPayroll";
             this.lblDepartmentPayroll.Size = new System.Drawing.Size(180, 29);
             this.lblDepartmentPayroll.TabIndex = 25;
@@ -412,7 +419,7 @@
             // 
             this.lblPerceptions.AutoSize = true;
             this.lblPerceptions.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPerceptions.Location = new System.Drawing.Point(275, 312);
+            this.lblPerceptions.Location = new System.Drawing.Point(437, 312);
             this.lblPerceptions.Name = "lblPerceptions";
             this.lblPerceptions.Size = new System.Drawing.Size(229, 29);
             this.lblPerceptions.TabIndex = 15;
@@ -422,7 +429,7 @@
             // numericHoliday
             // 
             this.numericHoliday.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.numericHoliday.Location = new System.Drawing.Point(280, 196);
+            this.numericHoliday.Location = new System.Drawing.Point(442, 201);
             this.numericHoliday.Maximum = new decimal(new int[] {
             1661992959,
             1808227885,
@@ -435,7 +442,7 @@
             // numericRestDay
             // 
             this.numericRestDay.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.numericRestDay.Location = new System.Drawing.Point(280, 122);
+            this.numericRestDay.Location = new System.Drawing.Point(442, 122);
             this.numericRestDay.Maximum = new decimal(new int[] {
             1661992959,
             1808227885,
@@ -448,7 +455,7 @@
             // numericHours
             // 
             this.numericHours.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.numericHours.Location = new System.Drawing.Point(280, 46);
+            this.numericHours.Location = new System.Drawing.Point(442, 49);
             this.numericHours.Maximum = new decimal(new int[] {
             1661992959,
             1808227885,
@@ -462,7 +469,7 @@
             // 
             this.lblBonus.AutoSize = true;
             this.lblBonus.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBonus.Location = new System.Drawing.Point(275, 233);
+            this.lblBonus.Location = new System.Drawing.Point(437, 234);
             this.lblBonus.Name = "lblBonus";
             this.lblBonus.Size = new System.Drawing.Size(330, 29);
             this.lblBonus.TabIndex = 10;
@@ -473,7 +480,7 @@
             // 
             this.lblHoliday.AutoSize = true;
             this.lblHoliday.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblHoliday.Location = new System.Drawing.Point(275, 164);
+            this.lblHoliday.Location = new System.Drawing.Point(437, 164);
             this.lblHoliday.Name = "lblHoliday";
             this.lblHoliday.Size = new System.Drawing.Size(270, 29);
             this.lblHoliday.TabIndex = 9;
@@ -483,7 +490,7 @@
             // 
             this.lblRestDay.AutoSize = true;
             this.lblRestDay.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRestDay.Location = new System.Drawing.Point(275, 87);
+            this.lblRestDay.Location = new System.Drawing.Point(437, 87);
             this.lblRestDay.Name = "lblRestDay";
             this.lblRestDay.Size = new System.Drawing.Size(285, 29);
             this.lblRestDay.TabIndex = 8;
@@ -493,32 +500,18 @@
             // 
             this.lblHours.AutoSize = true;
             this.lblHours.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblHours.Location = new System.Drawing.Point(275, 14);
+            this.lblHours.Location = new System.Drawing.Point(437, 17);
             this.lblHours.Name = "lblHours";
             this.lblHours.Size = new System.Drawing.Size(167, 29);
             this.lblHours.TabIndex = 6;
             this.lblHours.Text = "Hours Worked";
             // 
-            // numericSalaryPayroll
-            // 
-            this.numericSalaryPayroll.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.numericSalaryPayroll.Location = new System.Drawing.Point(22, 128);
-            this.numericSalaryPayroll.Maximum = new decimal(new int[] {
-            1661992959,
-            1808227885,
-            5,
-            0});
-            this.numericSalaryPayroll.Name = "numericSalaryPayroll";
-            this.numericSalaryPayroll.ReadOnly = true;
-            this.numericSalaryPayroll.Size = new System.Drawing.Size(204, 30);
-            this.numericSalaryPayroll.TabIndex = 5;
-            // 
             // pbxPayroll
             // 
             this.pbxPayroll.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pbxPayroll.Location = new System.Drawing.Point(22, 165);
+            this.pbxPayroll.Location = new System.Drawing.Point(192, 38);
             this.pbxPayroll.Name = "pbxPayroll";
-            this.pbxPayroll.Size = new System.Drawing.Size(204, 127);
+            this.pbxPayroll.Size = new System.Drawing.Size(230, 220);
             this.pbxPayroll.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbxPayroll.TabIndex = 4;
             this.pbxPayroll.TabStop = false;
@@ -527,7 +520,7 @@
             // 
             this.lblSalaryPayroll.AutoSize = true;
             this.lblSalaryPayroll.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSalaryPayroll.Location = new System.Drawing.Point(17, 96);
+            this.lblSalaryPayroll.Location = new System.Drawing.Point(6, 165);
             this.lblSalaryPayroll.Name = "lblSalaryPayroll";
             this.lblSalaryPayroll.Size = new System.Drawing.Size(180, 29);
             this.lblSalaryPayroll.TabIndex = 2;
@@ -537,7 +530,7 @@
             // 
             this.lblNamePayroll.AutoSize = true;
             this.lblNamePayroll.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNamePayroll.Location = new System.Drawing.Point(17, 25);
+            this.lblNamePayroll.Location = new System.Drawing.Point(6, 87);
             this.lblNamePayroll.Name = "lblNamePayroll";
             this.lblNamePayroll.Size = new System.Drawing.Size(78, 29);
             this.lblNamePayroll.TabIndex = 1;
@@ -545,10 +538,11 @@
             // 
             // txtNamePayroll
             // 
-            this.txtNamePayroll.Location = new System.Drawing.Point(22, 59);
+            this.txtNamePayroll.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNamePayroll.Location = new System.Drawing.Point(11, 122);
             this.txtNamePayroll.Name = "txtNamePayroll";
             this.txtNamePayroll.ReadOnly = true;
-            this.txtNamePayroll.Size = new System.Drawing.Size(204, 22);
+            this.txtNamePayroll.Size = new System.Drawing.Size(157, 30);
             this.txtNamePayroll.TabIndex = 0;
             // 
             // lblPay
@@ -585,6 +579,59 @@
             this.lblNumeroEnLetras.TabIndex = 26;
             this.lblNumeroEnLetras.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // lblSalaryPayrollValue
+            // 
+            this.lblSalaryPayrollValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSalaryPayrollValue.Location = new System.Drawing.Point(6, 197);
+            this.lblSalaryPayrollValue.Name = "lblSalaryPayrollValue";
+            this.lblSalaryPayrollValue.Size = new System.Drawing.Size(162, 29);
+            this.lblSalaryPayrollValue.TabIndex = 29;
+            // 
+            // lblFace1
+            // 
+            this.lblFace1.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.lblFace1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFace1.Location = new System.Drawing.Point(612, 60);
+            this.lblFace1.Name = "lblFace1";
+            this.lblFace1.Size = new System.Drawing.Size(222, 53);
+            this.lblFace1.TabIndex = 11;
+            this.lblFace1.Text = "Center your face in here.";
+            this.lblFace1.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.lblFace1.Visible = false;
+            // 
+            // lblFace3
+            // 
+            this.lblFace3.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.lblFace3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFace3.Location = new System.Drawing.Point(612, 183);
+            this.lblFace3.Name = "lblFace3";
+            this.lblFace3.Size = new System.Drawing.Size(222, 77);
+            this.lblFace3.TabIndex = 12;
+            this.lblFace3.Text = "Center your face in here.";
+            this.lblFace3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblFace3.Visible = false;
+            // 
+            // lblFace2
+            // 
+            this.lblFace2.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.lblFace2.BackColor = System.Drawing.Color.Transparent;
+            this.lblFace2.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFace2.Location = new System.Drawing.Point(778, 113);
+            this.lblFace2.Name = "lblFace2";
+            this.lblFace2.Size = new System.Drawing.Size(57, 142);
+            this.lblFace2.TabIndex = 13;
+            this.lblFace2.Visible = false;
+            // 
+            // lblFace4
+            // 
+            this.lblFace4.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.lblFace4.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFace4.Location = new System.Drawing.Point(610, 113);
+            this.lblFace4.Name = "lblFace4";
+            this.lblFace4.Size = new System.Drawing.Size(53, 142);
+            this.lblFace4.TabIndex = 14;
+            this.lblFace4.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -596,8 +643,8 @@
             this.Controls.Add(this.btnAddEmployee);
             this.Controls.Add(this.lblPay);
             this.Controls.Add(this.btnPayrollMenu);
-            this.Controls.Add(this.panelPayroll);
             this.Controls.Add(this.panelAddEmployee);
+            this.Controls.Add(this.panelPayroll);
             this.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -617,7 +664,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericHoliday)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericRestDay)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericHours)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericSalaryPayroll)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbxPayroll)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -638,7 +684,6 @@
         private System.Windows.Forms.PictureBox pbxPayroll;
         private System.Windows.Forms.Label lblSalaryPayroll;
         private System.Windows.Forms.Label lblNamePayroll;
-        private System.Windows.Forms.NumericUpDown numericSalaryPayroll;
         private System.Windows.Forms.Label lblPay;
         private System.Windows.Forms.Label lblDeductions;
         private System.Windows.Forms.NumericUpDown numericDiscount;
@@ -669,6 +714,11 @@
         private System.Windows.Forms.Label lblPayValue;
         private System.Windows.Forms.Label lblBonusValue;
         private System.Windows.Forms.Label lblNumeroEnLetras;
+        private System.Windows.Forms.Label lblSalaryPayrollValue;
+        private System.Windows.Forms.Label lblFace4;
+        private System.Windows.Forms.Label lblFace2;
+        private System.Windows.Forms.Label lblFace3;
+        private System.Windows.Forms.Label lblFace1;
     }
 }
 

@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Resources.ResXFileRef;
 
+
+
 namespace nominaApp
 {
     public partial class Form1 : Form
@@ -112,13 +114,13 @@ namespace nominaApp
                 Employee emp;
                 emp = new Employee();
                 emp.Name = txtNamePayroll.Text;
-                emp.Salary = numericSalaryPayroll.Value;
+                emp.Salary = Convert.ToDecimal(lblSalaryPayrollValue.Text);
                 emp.Department = lblDepartmentPayroll.Text;
                 emp.CalcularBono(lblDepartmentPayroll.Text);
 
-                decimal Total = numericHours.Value * numericSalaryPayroll.Value;
-                Total += numericRestDay.Value * 2 * numericSalaryPayroll.Value;
-                Total += numericHoliday.Value * 2 * numericSalaryPayroll.Value;
+                decimal Total = numericHours.Value * Convert.ToDecimal(lblSalaryPayrollValue.Text);
+                Total += numericRestDay.Value * 2 * Convert.ToDecimal(lblSalaryPayrollValue.Text);
+                Total += numericHoliday.Value * 2 * Convert.ToDecimal(lblSalaryPayrollValue.Text);
                 decimal bonusTotal = emp.Bono * numericHours.Value;
                 lblBonusValue.Text = bonusTotal.ToString();
                 lblBonusValue.Visible = true;
@@ -148,7 +150,7 @@ namespace nominaApp
         private void dgvAddEmployee_SelectionChanged(object sender, EventArgs e)
         {
             txtNamePayroll.Text = string.Empty;
-            numericSalaryPayroll.Value = 0;
+            lblSalaryPayrollValue.Text = "";
             pbxPayroll.Image = null;
             lblDepartmentPayroll.Text = string.Empty;
             numericHours.Value = 0;
@@ -163,7 +165,7 @@ namespace nominaApp
             numericSalary.Value = 0;
             pbxEmployee.Image = null;
             txtNamePayroll.Text = string.Empty;
-            numericSalaryPayroll.Value = 0;
+            lblSalaryPayrollValue.Text = "";
             lblDepartmentPayroll.Text = string.Empty;
             pbxPayroll.Image = null;
             lblBonusValue.Visible = false;
@@ -281,7 +283,7 @@ namespace nominaApp
                     txtNamePayroll.Text = dgvAddEmployee.Rows[e.RowIndex].Cells[0].Value.ToString();
                     // Show Employee's Salary per Hour in both Numeric Controls
                     numericSalary.Value = Convert.ToDecimal(dgvAddEmployee.Rows[e.RowIndex].Cells[2].Value);
-                    numericSalaryPayroll.Value = Convert.ToDecimal(dgvAddEmployee.Rows[e.RowIndex].Cells[2].Value);
+                lblSalaryPayrollValue.Text = dgvAddEmployee.Rows[e.RowIndex].Cells[2].Value.ToString();
                     lblDepartmentPayroll.Text = dgvAddEmployee.Rows[e.RowIndex].Cells[1].Value.ToString();
                     numericHours.Value = 0;
                     numericRestDay.Value = 0;
@@ -319,7 +321,7 @@ namespace nominaApp
                             // Clear controls.
                             txtName.Text = string.Empty; txtNamePayroll.Text = string.Empty;
                             numericSalary.Value = 0;
-                            numericSalaryPayroll.Value = 0;
+                            lblSalaryPayrollValue.Text = "";
                             /*for (int i = 0; i < this.checkedDepartment.Items.Count; i++)
                             {
                                 this.checkedDepartment.SetItemChecked(i, false);
@@ -490,6 +492,10 @@ namespace nominaApp
         private void btnStartCam_Click(object sender, EventArgs e)
         {
             CloseWebCam();
+            lblFace1.Visible = true;
+            lblFace3.Visible = true;
+            lblFace2.Visible = true;
+            lblFace4.Visible = true;
             int i = comboBox1.SelectedIndex;
             // Convert device name from collection to the right format (monikerString).
             string deviceName = myDevices[i].MonikerString;
@@ -512,6 +518,7 @@ namespace nominaApp
             // Show the copy of the frame in the PictureBox.
             pbxEmployee.Image = image;
         }
+
         /// <summary>
         /// Stop using the Video Input Device (MyWebCam).
         /// </summary>
@@ -534,23 +541,53 @@ namespace nominaApp
             {
                 // Stop Video Input Device.
                 CloseWebCam();
-                // Asign new name to Photo.
+
+                // Capture the image from the PictureBox.
+                Image capturedImage = pbxEmployee.Image;
+
+                // Calculate the desired dimensions for the cropped photo.
+                int desiredWidth = 500;  // Set your desired width here
+                int desiredHeight = 500; // Set your desired height here
+
+                // Calculate the starting point for cropping.
+                int x = (capturedImage.Width - desiredWidth) / 2;
+                int y = (capturedImage.Height - desiredHeight) / 2;
+
+                // Create a new Bitmap for the cropped photo.
+                Bitmap croppedImage = new Bitmap(desiredWidth, desiredHeight);
+
+                // Create a Graphics object from the croppedImage Bitmap.
+                using (Graphics graphics = Graphics.FromImage(croppedImage))
+                {
+                    // Set the interpolation mode to high quality for better resizing.
+                    graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+
+                    // Draw the cropped portion of the capturedImage onto the croppedImage.
+                    graphics.DrawImage(capturedImage, 0, 0, new Rectangle(x, y, desiredWidth, desiredHeight), GraphicsUnit.Pixel);
+                }
+
+                // Generate a unique filename for the cropped photo.
                 string fileName = string.Format("imagen{0}.jpg", imageCounter);
-                // Save Image from the PictureBox.
-                pbxEmployee.Image.Save(Path.Combine(imagesPath, fileName), ImageFormat.Jpeg);
-                // Add 1 to counter so the next Photo has a different name.
+
+                // Save the croppedImage to the specified path.
+                string croppedImagePath = Path.Combine(imagesPath, fileName);
+                croppedImage.Save(croppedImagePath, ImageFormat.Jpeg);
+
+                // Increment the imageCounter variable and save the updated value to a text file.
                 imageCounter++;
-                // Save imageCounter value in txt Document.
                 File.WriteAllText(counterFilePath, imageCounter.ToString());
-                photoPath = Path.Combine(imagesPath, fileName);
+
+                // Update the photoPath variable with the path of the cropped photo.
+                photoPath = croppedImagePath;
+
+                // Load the cropped photo into the pbxEmployee PictureBox.
                 pbxEmployee.Image = Image.FromFile(photoPath);
+                lblFace1.Visible = false;
+                lblFace2.Visible = false;
+                lblFace3.Visible = false;
+                lblFace4.Visible = false;
             }
         }
-
-
-
-
-
         #endregion
 
         
