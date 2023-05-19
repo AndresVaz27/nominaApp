@@ -6,11 +6,13 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Resources.ResXFileRef;
 
 namespace nominaApp
 {
@@ -84,34 +86,10 @@ namespace nominaApp
         /// <param name="e"></param>
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            /*Employee employee = new Employee();
-            employee.Name = txtName.Text;
-            employee.Salary = numericSalary.Value;
-            employee.Department = checkedDepartment.Text;
-            // Save Employee's Image from the picturebox
-            employee.ImagePath = ofd.FileName;
-            // Add a Row to the DataGridView containing the Employee's Info
-            dgvAddEmployee.Rows.Add(employee.Name, employee.Department, employee.Salary, employee.ImagePath);
-            // Clear Controls
-            txtName.Clear();
-            ofd.FileName = string.Empty;
-            numericSalary.Value = 0;
-            pbxEmployee.Image = null;
-            checkedDepartment.SetItemChecked(checkedDepartment.SelectedIndex, false);
-            checkedDepartment.ClearSelected();
-            MessageBox.Show(employee.ToString());*/
-            try
-            {
-              // Employee's Contructor Method.
-              Employee employee = new Employee(txtName.Text, numericSalary.Value, checkedDepartment.Text, 
-            ofd.FileName, photoPath, dgvAddEmployee, txtName, numericSalary, checkedDepartment, pbxEmployee, ofd);
-              MessageBox.Show(employee.ToString());
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Unable to add Employee");
-            }
-            
+            Employee employee = new Employee(txtName.Text, numericSalary.Value, comboBox2.Text,
+            ofd.FileName, photoPath, dgvAddEmployee, txtName, numericSalary, comboBox2, pbxEmployee, ofd);
+            photoPath = null;
+            TotalPay();
 
         }
 
@@ -122,63 +100,177 @@ namespace nominaApp
         /// <param name="e"></param>
         private void btnCalculate_Click(object sender, EventArgs e)
         {
-            Employee emp;
-            emp = new Employee();
-            emp.Name = txtNamePayroll.Text;
-            emp.Salary = numericSalaryPayroll.Value;
-            emp.Department = lblDepartmentPayroll.Text;
-            emp.CalcularBono();
-            
-            decimal Total = numericHours.Value * numericSalaryPayroll.Value;
-            Total += numericRestDay.Value * 2 * numericSalaryPayroll.Value;
-            Total += numericHoliday.Value * 2 * numericSalaryPayroll.Value;
-            decimal bonusTotal = emp.Bono * numericHours.Value;
-            numericBonus.Value = bonusTotal;
-            Total += bonusTotal;
-            numericPerceptions.Value = Total;
-            Total -= emp.Salary * numericAbsence.Value;
-            Total -= numericDiscount.Value;
-            decimal deductions = (numericAbsence.Value * emp.Salary) + numericDiscount.Value;
-            numericDeductions.Value = deductions;
-            numericPay.Value = Total;
-        }
-        #endregion
-
-        #region CheckedDepartment Control SelectionMode = 1 only
-        /// <summary>
-        /// Select only 1 item in checkedDepartment Control.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void checkedDepartment_ItemCheck(object sender, ItemCheckEventArgs e)
-        {
-            // If the user is selecting a new item, deseleccionar cualquier otro elemento
-            if (e.NewValue == CheckState.Checked)
+            if (txtNamePayroll.Text == "")
             {
-                for (int i = 0; i < checkedDepartment.Items.Count; ++i)
-                {
-                    if (i != e.Index && checkedDepartment.GetItemChecked(i))
-                    {
-                        checkedDepartment.SetItemChecked(i, false);
-                    }
-                }
+                MessageBox.Show("Please double click on a row that contains Employee's Information before modifying.", "No Employee Selected.");
+                return;
             }
+           DialogResult dr = MessageBox.Show("Do you want to modify this employee?", "Modify Employee?",MessageBoxButtons.YesNo);
+            switch (dr)
+            {
+                case DialogResult.Yes:
+                Employee emp;
+                emp = new Employee();
+                emp.Name = txtNamePayroll.Text;
+                emp.Salary = numericSalaryPayroll.Value;
+                emp.Department = lblDepartmentPayroll.Text;
+                emp.CalcularBono(lblDepartmentPayroll.Text);
+
+                decimal Total = numericHours.Value * numericSalaryPayroll.Value;
+                Total += numericRestDay.Value * 2 * numericSalaryPayroll.Value;
+                Total += numericHoliday.Value * 2 * numericSalaryPayroll.Value;
+                decimal bonusTotal = emp.Bono * numericHours.Value;
+                lblBonusValue.Text = bonusTotal.ToString();
+                lblBonusValue.Visible = true;
+                lblBonus.Visible = true;
+                Total += bonusTotal;
+                lblTotalPerceptionsValue.Text = Total.ToString();
+                lblTotalPerceptionsValue.Visible = true;
+                lblPerceptions.Visible = true;
+                Total -= emp.Salary * numericAbsence.Value;
+                Total -= numericDiscount.Value;
+                decimal deductions = (numericAbsence.Value * emp.Salary) + numericDiscount.Value;
+                lblTotalDeductionsValue.Text = deductions.ToString();
+                lblTotalDeductionsValue.Visible = true;
+                lblDeductions.Visible = true;
+
+                dgvAddEmployee.Rows[dgvAddEmployee.SelectedRows[0].Index].Cells[4].Value = Total;
+                    TotalPay();
+                return;
+                case DialogResult.No:
+                    return;
+            }
+            
         }
         #endregion
 
         #region dgvAddEmployee
+        private void dgvAddEmployee_SelectionChanged(object sender, EventArgs e)
+        {
+            txtNamePayroll.Text = string.Empty;
+            numericSalaryPayroll.Value = 0;
+            pbxPayroll.Image = null;
+            lblDepartmentPayroll.Text = string.Empty;
+            numericHours.Value = 0;
+            numericRestDay.Value = 0;
+            numericHoliday.Value = 0;
+            lblBonusValue.Text = string.Empty;
+            lblTotalPerceptionsValue.Text = string.Empty;
+            numericAbsence.Value = 0;
+            numericDiscount.Value = 0;
+            lblTotalDeductionsValue.Text = string.Empty;
+            txtName.Text = string.Empty;
+            numericSalary.Value = 0;
+            pbxEmployee.Image = null;
+            txtNamePayroll.Text = string.Empty;
+            numericSalaryPayroll.Value = 0;
+            lblDepartmentPayroll.Text = string.Empty;
+            pbxPayroll.Image = null;
+            lblBonusValue.Visible = false;
+            lblBonus.Visible = false;
+            lblTotalPerceptionsValue.Visible = false;
+            lblTotalDeductionsValue.Visible = false;
+        }
+
+        private string toText(double value)
+        {
+            string Num2Text = "";
+            value = Math.Truncate(value);
+            if (value == 0) Num2Text = "CERO";
+            else if (value == 1) Num2Text = "UNO";
+            else if (value == 2) Num2Text = "DOS";
+            else if (value == 3) Num2Text = "TRES";
+            else if (value == 4) Num2Text = "CUATRO";
+            else if (value == 5) Num2Text = "CINCO";
+            else if (value == 6) Num2Text = "SEIS";
+            else if (value == 7) Num2Text = "SIETE";
+            else if (value == 8) Num2Text = "OCHO";
+            else if (value == 9) Num2Text = "NUEVE";
+            else if (value == 10) Num2Text = "DIEZ";
+            else if (value == 11) Num2Text = "ONCE";
+            else if (value == 12) Num2Text = "DOCE";
+            else if (value == 13) Num2Text = "TRECE";
+            else if (value == 14) Num2Text = "CATORCE";
+            else if (value == 15) Num2Text = "QUINCE";
+            else if (value < 20) Num2Text = "DIECI" + toText(value - 10);
+            else if (value == 20) Num2Text = "VEINTE";
+            else if (value < 30) Num2Text = "VEINTI" + toText(value - 20);
+            else if (value == 30) Num2Text = "TREINTA";
+            else if (value == 40) Num2Text = "CUARENTA";
+            else if (value == 50) Num2Text = "CINCUENTA";
+            else if (value == 60) Num2Text = "SESENTA";
+            else if (value == 70) Num2Text = "SETENTA";
+            else if (value == 80) Num2Text = "OCHENTA";
+            else if (value == 90) Num2Text = "NOVENTA";
+            else if (value < 100) Num2Text = toText(Math.Truncate(value / 10) * 10) + " Y " + toText(value % 10);
+            else if (value == 100) Num2Text = "CIEN";
+            else if (value < 200) Num2Text = "CIENTO " + toText(value - 100);
+            else if ((value == 200) || (value == 300) || (value == 400) || (value == 600) || (value == 800)) Num2Text = toText(Math.Truncate(value / 100)) + "CIENTOS";
+            else if (value == 500) Num2Text = "QUINIENTOS";
+            else if (value == 700) Num2Text = "SETECIENTOS";
+            else if (value == 900) Num2Text = "NOVECIENTOS";
+            else if (value < 1000) Num2Text = toText(Math.Truncate(value / 100) * 100) + " " + toText(value % 100);
+            else if (value == 1000) Num2Text = "MIL";
+            else if (value < 2000) Num2Text = "MIL " + toText(value % 1000);
+            else if (value < 1000000)
+            {
+                Num2Text = toText(Math.Truncate(value / 1000)) + " MIL";
+                if ((value % 1000) > 0) Num2Text = Num2Text + " " + toText(value % 1000);
+            }
+
+            else if (value == 1000000) Num2Text = "UN MILLON";
+            else if (value < 2000000) Num2Text = "UN MILLON " + toText(value % 1000000);
+            else if (value < 1000000000000)
+            {
+                Num2Text = toText(Math.Truncate(value / 1000000)) + " MILLONES ";
+                if ((value - Math.Truncate(value / 1000000) * 1000000) > 0) Num2Text = Num2Text + " " + toText(value - Math.Truncate(value / 1000000) * 1000000);
+            }
+
+            else if (value == 1000000000000) Num2Text = "UN BILLON";
+            else if (value < 2000000000000) Num2Text = "UN BILLON " + toText(value - Math.Truncate(value / 1000000000000) * 1000000000000);
+
+            else
+            {
+                Num2Text = toText(Math.Truncate(value / 1000000000000)) + " BILLONES";
+                if ((value - Math.Truncate(value / 1000000000000) * 1000000000000) > 0) Num2Text = Num2Text + " " + toText(value - Math.Truncate(value / 1000000000000) * 1000000000000);
+            }
+            return Num2Text;
+
+        }
+
+
+        private void TotalPay()
+        {
+            CultureInfo cultureInfo = new CultureInfo("es-MX");
+            decimal celda;
+            decimal suma = 0;
+            foreach (DataGridViewRow row in dgvAddEmployee.Rows)
+            {
+                if(row.Cells[4].Value != "")
+                {
+                    celda = Convert.ToDecimal(row.Cells[4].Value);
+                    suma += celda;
+                    
+                }
+            }
+            lblPayValue.Text = suma.ToString("C", cultureInfo);
+            lblNumeroEnLetras.Text = toText(Convert.ToDouble(suma)) + " PESOS.";
+        }
+        
+        private void dgvAddEmployee_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            TotalPay();
+        }
         /// <summary>
         /// Show Employee's Info on Controls when clicking a DataGridView Row
         /// </summary>
         /// <param name="sender">DataGridView</param>
         /// <param name="e">Celda de la DataGridView</param>
-        private void dgvAddEmployee_CellClick(object sender, DataGridViewCellEventArgs e)
+        public void dgvAddEmployee_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
+
             try
             {
-                if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
-                {
-
                     // Get Image Path
                     string rutaImagen = dgvAddEmployee.Rows[e.RowIndex].Cells[3].Value.ToString();
                     // Show the image in both picture boxes
@@ -194,86 +286,16 @@ namespace nominaApp
                     numericHours.Value = 0;
                     numericRestDay.Value = 0;
                     numericHoliday.Value = 0;
-                    numericBonus.Value = 0;
-                    numericPerceptions.Value = 0;
+                lblBonusValue.Text = string.Empty;
+                    lblTotalPerceptionsValue.Text = string.Empty;
                     numericAbsence.Value = 0;
                     numericDiscount.Value = 0;
-                    numericDeductions.Value = 0;
-                    numericPay.Value = 0;
-                }
-                else
-                {
-                    txtNamePayroll.Text = string.Empty;
-                    numericSalaryPayroll.Value = 0;
-                    pbxPayroll.Image = null;
-                    lblDepartmentPayroll.Text = string.Empty;
-                    numericHours.Value = 0;
-                    numericRestDay.Value = 0;
-                    numericHoliday.Value = 0;
-                    numericBonus.Value = 0;
-                    numericPerceptions.Value = 0;
-                    numericAbsence.Value = 0;
-                    numericDiscount.Value = 0;
-                    numericDeductions.Value = 0;
-                    numericPay.Value = 0;
-                    return;
-                }
-
+                    lblTotalDeductionsValue.Text = string.Empty;
             }
             catch (Exception)
             {
-                txtName.Text = string.Empty;
-                numericSalary.Value = 0;
-                for (int i = 0; i < this.checkedDepartment.Items.Count; i++)
-                {
-                    this.checkedDepartment.SetItemChecked(i, false);
-                }
-                this.checkedDepartment.ClearSelected();
-                pbxEmployee.Image = null;
-                txtNamePayroll.Text = string.Empty;
-                numericSalaryPayroll.Value = 0;
-                lblDepartmentPayroll.Text = string.Empty;
-                pbxPayroll.Image = null;
+                dgvAddEmployee_SelectionChanged(sender,e);
                 MessageBox.Show("Unable to show Employee's Info");
-            }
-
-        }
-        /// <summary>
-        /// Delete DataGridView Row
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void dgvAddEmployee_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-            DialogResult dr = MessageBox.Show("Would you like to delete this row?", "Delete Row", MessageBoxButtons.YesNo);
-            switch (dr)
-            {
-                case DialogResult.Yes:
-                    try
-                    {
-                        DataGridViewRow selectedrow = dgvAddEmployee.Rows[e.RowIndex];// Get selected row's index 
-                        dgvAddEmployee.Rows.Remove(selectedrow);
-                        txtName.Text = string.Empty; txtNamePayroll.Text = string.Empty;
-                        numericSalary.Value = 0;
-                        numericSalaryPayroll.Value = 0;
-                        for (int i = 0; i < this.checkedDepartment.Items.Count; i++)
-                        {
-                            this.checkedDepartment.SetItemChecked(i, false);
-                        }
-                        lblDepartmentPayroll.Text = string.Empty;
-                        pbxEmployee.Image = null;
-                        pbxPayroll.Image = null;
-
-
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                    }
-                    break;
-                case DialogResult.No:
-                    break;
             }
         }
         /// <summary>
@@ -298,10 +320,10 @@ namespace nominaApp
                             txtName.Text = string.Empty; txtNamePayroll.Text = string.Empty;
                             numericSalary.Value = 0;
                             numericSalaryPayroll.Value = 0;
-                            for (int i = 0; i < this.checkedDepartment.Items.Count; i++)
+                            /*for (int i = 0; i < this.checkedDepartment.Items.Count; i++)
                             {
                                 this.checkedDepartment.SetItemChecked(i, false);
-                            }
+                            }*/
                             lblDepartmentPayroll.Text = string.Empty;
                             pbxEmployee.Image = null;
                             pbxPayroll.Image = null;
@@ -320,6 +342,7 @@ namespace nominaApp
 
             }
         }
+        
         #endregion
 
         #region Form1
@@ -418,7 +441,23 @@ namespace nominaApp
                     imageCounter = counterValue;
                 }
             }
+            // Add every existing Department in ComboBox2.
+            string departamentos = "departamentos.txt";
+            if (File.Exists(departamentos))
+            {
+                StreamReader reader = new StreamReader(departamentos);
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        string[] values = line.Split(',');
+                        comboBox2.Items.Add(values[0]);
+                    }
+                }
+            }
+            comboBox2.Text = comboBox2.Items[0].ToString();
             LoadDevices();
+            TotalPay();
         }
         #endregion
 
@@ -507,6 +546,13 @@ namespace nominaApp
                 pbxEmployee.Image = Image.FromFile(photoPath);
             }
         }
+
+
+
+
+
         #endregion
+
+        
     }
 }

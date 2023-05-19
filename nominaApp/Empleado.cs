@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Cryptography;
@@ -25,7 +26,7 @@ namespace nominaApp
         PictureBox EmployeePictureBox;
         OpenFileDialog OpenFileDialog;
         public decimal porcentajeBono;
-
+        ComboBox ComboBox;
 
         public override string ToString()
         {
@@ -55,35 +56,38 @@ namespace nominaApp
             set { department = value; }
         }
 
-        public decimal CalcularBono()
+        public decimal CalcularBono(string departamento)
         {
-            porcentajeBono = 0;
+            string[] lineas = File.ReadAllLines("departamentos.txt");  // Read every line from the file
 
-            switch (Department)
+            foreach (string linea in lineas)
             {
-                case "Sales":
-                    porcentajeBono = 0.2m;
-                    break;
-                case "Manager":
-                    porcentajeBono = 0.15m;
-                    break;
-                case "Assistant Manager":
-                    porcentajeBono = 0.10m;
-                    break;
+                string[] datos = linea.Split(',');  // Divide la línea en los datos separados por comas
+                if (datos[0].Trim() == departamento)
+                {
+                    decimal porcentaje = decimal.Parse(datos[1].Trim());
+                    return Bono = Salary * porcentaje;
+                }
             }
 
-            return Bono = Salary * porcentajeBono;
+            return 0;  // Devuelve 0 si no se encuentra el departamento
         }
 
         public Employee(string name, decimal salary, string department, string imagePath, 
             string photoPath, DataGridView dataGridView, TextBox nameTextBox, NumericUpDown salaryNumericUpDown, 
-            CheckedListBox departmentCheckedListBox, PictureBox employeePictureBox, OpenFileDialog openFileDialog)
+            ComboBox comboBox, PictureBox employeePictureBox, OpenFileDialog openFileDialog)
         {
            if (name == "")
             {
                 MessageBox.Show("Name Required.");
                 return;
-            }if (department == "")
+            }
+            if (salary == 0)
+            {
+                MessageBox.Show("Salary must not be '0'.");
+                return;
+            }
+            if (department == "")
             {
                 MessageBox.Show("Deparment Required.");
                 return;
@@ -106,28 +110,26 @@ namespace nominaApp
             this.DataGridView = dataGridView;
             this.NameTextBox = nameTextBox;
             this.SalaryNumericUpDown = salaryNumericUpDown;
-            this.DepartmentCheckedListBox = departmentCheckedListBox;
+            this.ComboBox = comboBox;
             this.EmployeePictureBox = employeePictureBox;
             this.OpenFileDialog = openFileDialog;
-            
+
+            decimal pay = Salary * 40;
+            pay = CalcularBono(department) + pay;
 
             // Agregar Row a la DataGridView con la info del empleado.
-            this.DataGridView.Rows.Add(this.Name, this.Department, this.Salary, this.ImagePath);
-
+            this.DataGridView.Rows.Add(this.Name, this.Department, this.Salary, this.ImagePath, pay);
+            MessageBox.Show(ToString());
             // Clear Controls
             this.NameTextBox.Clear();
             this.OpenFileDialog.FileName = string.Empty;
             this.SalaryNumericUpDown.Value = 0;
             this.EmployeePictureBox.Image = null;
-            for (int i = 0; i < this.DepartmentCheckedListBox.Items.Count; i++)
-            {
-                this.DepartmentCheckedListBox.SetItemChecked(i, false);
-            }
-            this.DepartmentCheckedListBox.ClearSelected();
+            
         }
         public Employee()
         {
-            // Sin declarar nada.
+            CalcularBono(department);
         }
         /*~Employee()
         {

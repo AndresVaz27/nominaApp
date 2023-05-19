@@ -9,6 +9,6 @@ namespace nominaApp
 {
     internal interface IBono
     {
-        decimal CalcularBono();
+        decimal CalcularBono(string departamento);
 	}
 }
