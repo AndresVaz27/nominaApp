@@ -13,7 +13,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Resources.ResXFileRef;
-
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 
 
 namespace nominaApp
@@ -78,7 +79,7 @@ namespace nominaApp
                 MessageBox.Show("An Image is required to add a new Employee.", "Image required", MessageBoxButtons.OK);
                 return;
             }
-            pbxEmployee.Image = Image.FromFile(ofd.FileName);
+            pbxEmployee.Image = System.Drawing.Image.FromFile(ofd.FileName);
         }
 
         /// <summary>
@@ -317,8 +318,8 @@ namespace nominaApp
                 // Get Image Path
                 string rutaImagen = dgvRecibos.Rows[e.RowIndex].Cells[3].Value.ToString();
                 // Show the image in both picture boxes
-                pbxEmployee.Image = Image.FromFile(rutaImagen);
-                pbxPayroll.Image = Image.FromFile(rutaImagen);
+                pbxEmployee.Image = System.Drawing.Image.FromFile(rutaImagen);
+                pbxPayroll.Image = System.Drawing.Image.FromFile(rutaImagen);
                 // Show Employee's Name in both textboxes
                 txtName.Text = dgvRecibos.Rows[e.RowIndex].Cells[0].Value.ToString();
                 txtNamePayroll.Text = dgvRecibos.Rows[e.RowIndex].Cells[0].Value.ToString();
@@ -604,7 +605,7 @@ namespace nominaApp
                 CloseWebCam();
 
                 // Capture the image from the PictureBox.
-                Image capturedImage = pbxEmployee.Image;
+                System.Drawing.Image capturedImage = pbxEmployee.Image;
 
                 // Calculate the desired dimensions for the cropped photo.
                 int desiredWidth = 500;  // Set your desired width here
@@ -624,7 +625,7 @@ namespace nominaApp
                     graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
 
                     // Draw the cropped portion of the capturedImage onto the croppedImage.
-                    graphics.DrawImage(capturedImage, 0, 0, new Rectangle(x, y, desiredWidth, desiredHeight), GraphicsUnit.Pixel);
+                    graphics.DrawImage(capturedImage, 0, 0, new System.Drawing.Rectangle(x, y, desiredWidth, desiredHeight), GraphicsUnit.Pixel);
                 }
 
                 // Generate a unique filename for the cropped photo.
@@ -642,7 +643,7 @@ namespace nominaApp
                 photoPath = croppedImagePath;
 
                 // Load the cropped photo into the pbxEmployee PictureBox.
-                pbxEmployee.Image = Image.FromFile(photoPath);
+                pbxEmployee.Image = System.Drawing.Image.FromFile(photoPath);
                 lblFace1.Visible = false;
                 lblFace2.Visible = false;
                 lblFace3.Visible = false;
@@ -653,8 +654,115 @@ namespace nominaApp
 
 
 
+
         #endregion
 
-        
+        private void btnIndividualReceipt_Click(object sender, EventArgs e)
+        {
+            // Verifica si se ha seleccionado una fila en el DataGridView
+            if (dgvRecibos.SelectedRows.Count > 0)
+            {
+                // Obtiene la fila seleccionada
+                DataGridViewRow row = dgvRecibos.SelectedRows[0];
+
+                // Crea un documento PDF
+                Document doc = new Document();
+
+                try
+                {
+                    // Abre un cuadro de diálogo Guardar archivo para especificar la ubicación del archivo PDF
+                    SaveFileDialog saveFileDialog = new SaveFileDialog();
+                    saveFileDialog.Filter = "Archivos PDF|*.pdf";
+                    saveFileDialog.Title = "Guardar como PDF";
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        // Crea un escritor de PDF
+                        PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(saveFileDialog.FileName, FileMode.Create));
+                        doc.Open();
+
+                        // Agrega los datos de la fila seleccionada al documento PDF
+                        for (int i = 0; i < row.Cells.Count; i++)
+                        {
+                            doc.Add(new Paragraph(dgvRecibos.Columns[i].HeaderText + ": " + row.Cells[i].Value.ToString()));
+                        }
+
+                        // Cierra el documento PDF
+                        doc.Close();
+
+                        MessageBox.Show("PDF creado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al crear el PDF: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Por favor, seleccione una fila en el DataGridView.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void btnPDFPayroll_Click(object sender, EventArgs e)
+        {
+            // Verifica si hay filas en el DataGridView
+            if (dgvRecibos.Rows.Count > 0)
+            {
+                // Abre un cuadro de diálogo Guardar archivo para especificar la ubicación del archivo PDF
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "Archivos PDF|*.pdf";
+                saveFileDialog.Title = "Guardar como PDF";
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // Crea un documento PDF
+                    Document doc = new Document();
+
+                    //try
+                    //{
+                        // Crea un escritor de PDF
+                        PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(saveFileDialog.FileName, FileMode.Create));
+                        doc.Open();
+
+                        int currentRow = 0;
+                        int totalRows = dgvRecibos.Rows.Count;
+
+                        // Imprime las filas en el documento PDF
+                        while (currentRow <= totalRows-2)
+                        {
+                            DataGridViewRow row = dgvRecibos.Rows[currentRow];
+
+                            // Agrega los datos de la fila al documento PDF
+                            for (int j = 0; j < row.Cells.Count; j++)
+                            {
+                            object cellValue = row.Cells[j].Value;
+                            string cellText = cellValue != null ? cellValue.ToString() : string.Empty;
+                            doc.Add(new Paragraph(dgvRecibos.Columns[j].HeaderText + ": " + cellText));
+                        }
+
+                        doc.Add(new Paragraph("-----------------"));
+                            currentRow++;
+                        }
+
+                        // Imprime el total al final
+                        string totalText = "Total = " + lblPayValue.Text + " " + lblNumeroEnLetras.Text;
+                        doc.Add(new Paragraph(totalText));
+
+                        // Cierra el documento PDF
+
+                        MessageBox.Show("PDF creado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        doc.Close();
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    MessageBox.Show("Error al crear el PDF: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //}
+                }
+            }
+            else
+            {
+                MessageBox.Show("No hay filas en el DataGridView para imprimir.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            
+        }
     }
 }

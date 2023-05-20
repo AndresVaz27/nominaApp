@@ -75,6 +75,8 @@
             this.lblPayValue = new System.Windows.Forms.Label();
             this.lblNumeroEnLetras = new System.Windows.Forms.Label();
             this.dgvRecibos = new System.Windows.Forms.DataGridView();
+            this.btnIndividualReceipt = new System.Windows.Forms.Button();
+            this.btnPDFPayroll = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pbxEmployee)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericSalary)).BeginInit();
             this.panelAddEmployee.SuspendLayout();
@@ -385,7 +387,7 @@
             // 
             // btnModify
             // 
-            this.btnModify.Location = new System.Drawing.Point(1142, 122);
+            this.btnModify.Location = new System.Drawing.Point(1142, 129);
             this.btnModify.Name = "btnModify";
             this.btnModify.Size = new System.Drawing.Size(92, 67);
             this.btnModify.TabIndex = 12;
@@ -635,19 +637,43 @@
             this.dgvRecibos.SelectionChanged += new System.EventHandler(this.dgvRecibos_SelectionChanged);
             this.dgvRecibos.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvRecibos_KeyDown);
             // 
+            // btnIndividualReceipt
+            // 
+            this.btnIndividualReceipt.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnIndividualReceipt.Location = new System.Drawing.Point(12, 809);
+            this.btnIndividualReceipt.Name = "btnIndividualReceipt";
+            this.btnIndividualReceipt.Size = new System.Drawing.Size(148, 40);
+            this.btnIndividualReceipt.TabIndex = 30;
+            this.btnIndividualReceipt.Text = "Individual Receipt";
+            this.btnIndividualReceipt.UseVisualStyleBackColor = true;
+            this.btnIndividualReceipt.Click += new System.EventHandler(this.btnIndividualReceipt_Click);
+            // 
+            // btnPDFPayroll
+            // 
+            this.btnPDFPayroll.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnPDFPayroll.Location = new System.Drawing.Point(166, 809);
+            this.btnPDFPayroll.Name = "btnPDFPayroll";
+            this.btnPDFPayroll.Size = new System.Drawing.Size(148, 40);
+            this.btnPDFPayroll.TabIndex = 31;
+            this.btnPDFPayroll.Text = "Total Payroll PDF";
+            this.btnPDFPayroll.UseVisualStyleBackColor = true;
+            this.btnPDFPayroll.Click += new System.EventHandler(this.btnPDFPayroll_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1532, 853);
+            this.Controls.Add(this.btnIndividualReceipt);
+            this.Controls.Add(this.btnPDFPayroll);
             this.Controls.Add(this.lblNumeroEnLetras);
             this.Controls.Add(this.lblPayValue);
             this.Controls.Add(this.btnAddEmployee);
             this.Controls.Add(this.lblPay);
             this.Controls.Add(this.btnPayrollMenu);
             this.Controls.Add(this.dgvRecibos);
-            this.Controls.Add(this.panelAddEmployee);
             this.Controls.Add(this.panelPayroll);
+            this.Controls.Add(this.panelAddEmployee);
             this.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -722,6 +748,8 @@
         private System.Windows.Forms.Label lblFace3;
         private System.Windows.Forms.Label lblFace1;
         public System.Windows.Forms.DataGridView dgvRecibos;
+        private System.Windows.Forms.Button btnIndividualReceipt;
+        private System.Windows.Forms.Button btnPDFPayroll;
     }
 }
 
