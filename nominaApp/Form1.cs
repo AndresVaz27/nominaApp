@@ -43,6 +43,113 @@ namespace nominaApp
             imagesPath = @"C:\Users\andre\source\repos\nominaApp - Copy\nominaApp\bin\Debug\imagesPath";
         }
         #region Buttons
+        private void btnIndividualReceipt_Click(object sender, EventArgs e)
+        {
+            // Verifica si se ha seleccionado una fila en el DataGridView
+            if (dgvRecibos.SelectedRows.Count > 0)
+            {
+                // Obtiene la fila seleccionada
+                DataGridViewRow row = dgvRecibos.SelectedRows[0];
+
+                // Crea un documento PDF
+                Document doc = new Document();
+
+                try
+                {
+                    // Abre un cuadro de diálogo Guardar archivo para especificar la ubicación del archivo PDF
+                    SaveFileDialog saveFileDialog = new SaveFileDialog();
+                    saveFileDialog.Filter = "Archivos PDF|*.pdf";
+                    saveFileDialog.Title = "Guardar como PDF";
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        // Crea un escritor de PDF
+                        PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(saveFileDialog.FileName, FileMode.Create));
+                        doc.Open();
+
+                        // Agrega los datos de la fila seleccionada al documento PDF
+                        for (int i = 0; i < row.Cells.Count; i++)
+                        {
+                            doc.Add(new Paragraph(dgvRecibos.Columns[i].HeaderText + ": " + row.Cells[i].Value.ToString()));
+                        }
+
+                        // Cierra el documento PDF
+                        doc.Close();
+
+                        MessageBox.Show("PDF creado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al crear el PDF: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Por favor, seleccione una fila en el DataGridView.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void btnPDFPayroll_Click(object sender, EventArgs e)
+        {
+            // Verifica si hay filas en el DataGridView
+            if (dgvRecibos.Rows.Count > 0)
+            {
+                // Abre un cuadro de diálogo Guardar archivo para especificar la ubicación del archivo PDF
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "Archivos PDF|*.pdf";
+                saveFileDialog.Title = "Guardar como PDF";
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // Crea un documento PDF
+                    Document doc = new Document();
+
+                    try
+                    {
+                        // Crea un escritor de PDF
+                        PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(saveFileDialog.FileName, FileMode.Create));
+                        doc.Open();
+
+                        int currentRow = 0;
+                        int totalRows = dgvRecibos.Rows.Count;
+
+                        // Imprime las filas en el documento PDF
+                        while (currentRow <= totalRows - 2)
+                        {
+                            DataGridViewRow row = dgvRecibos.Rows[currentRow];
+
+                            // Agrega los datos de la fila al documento PDF
+                            for (int j = 0; j < row.Cells.Count; j++)
+                            {
+                                object cellValue = row.Cells[j].Value;
+                                string cellText = cellValue != null ? cellValue.ToString() : string.Empty;
+                                doc.Add(new Paragraph(dgvRecibos.Columns[j].HeaderText + ": " + cellText));
+                            }
+
+                            doc.Add(new Paragraph("-----------------"));
+                            currentRow++;
+                        }
+
+                        // Imprime el total al final
+                        string totalText = "Total = " + lblPayValue.Text + " " + lblNumeroEnLetras.Text;
+                        doc.Add(new Paragraph(totalText));
+
+                        // Cierra el documento PDF
+
+                        MessageBox.Show("PDF creado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        doc.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al crear el PDF: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No hay filas en el DataGridView para imprimir.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+        }
         /// <summary>
         /// Show Payroll Menu
         /// </summary>
@@ -189,7 +296,6 @@ namespace nominaApp
                 }
             }
         }
-
         private void dgvRecibos_SelectionChanged(object sender, EventArgs e)
         {
             txtNamePayroll.Text = string.Empty;
@@ -216,7 +322,6 @@ namespace nominaApp
             lblTotalPerceptionsValue.Visible = false;
             lblTotalDeductionsValue.Visible = false;
         }
-
         private string toText(double value)
         {
             string Num2Text = "";
@@ -282,8 +387,6 @@ namespace nominaApp
             return Num2Text;
 
         }
-
-
         private void TotalPay()
         {
             CultureInfo cultureInfo = new CultureInfo("es-MX");
@@ -301,7 +404,6 @@ namespace nominaApp
             lblPayValue.Text = suma.ToString("C", cultureInfo);
             lblNumeroEnLetras.Text = toText(Convert.ToDouble(suma)) + " PESOS.";
         }
-
         private void dgvRecibos_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
             TotalPay();
@@ -651,118 +753,7 @@ namespace nominaApp
             }
         }
 
-
-
-
-
         #endregion
 
-        private void btnIndividualReceipt_Click(object sender, EventArgs e)
-        {
-            // Verifica si se ha seleccionado una fila en el DataGridView
-            if (dgvRecibos.SelectedRows.Count > 0)
-            {
-                // Obtiene la fila seleccionada
-                DataGridViewRow row = dgvRecibos.SelectedRows[0];
-
-                // Crea un documento PDF
-                Document doc = new Document();
-
-                try
-                {
-                    // Abre un cuadro de diálogo Guardar archivo para especificar la ubicación del archivo PDF
-                    SaveFileDialog saveFileDialog = new SaveFileDialog();
-                    saveFileDialog.Filter = "Archivos PDF|*.pdf";
-                    saveFileDialog.Title = "Guardar como PDF";
-                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        // Crea un escritor de PDF
-                        PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(saveFileDialog.FileName, FileMode.Create));
-                        doc.Open();
-
-                        // Agrega los datos de la fila seleccionada al documento PDF
-                        for (int i = 0; i < row.Cells.Count; i++)
-                        {
-                            doc.Add(new Paragraph(dgvRecibos.Columns[i].HeaderText + ": " + row.Cells[i].Value.ToString()));
-                        }
-
-                        // Cierra el documento PDF
-                        doc.Close();
-
-                        MessageBox.Show("PDF creado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error al crear el PDF: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Por favor, seleccione una fila en el DataGridView.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
-        private void btnPDFPayroll_Click(object sender, EventArgs e)
-        {
-            // Verifica si hay filas en el DataGridView
-            if (dgvRecibos.Rows.Count > 0)
-            {
-                // Abre un cuadro de diálogo Guardar archivo para especificar la ubicación del archivo PDF
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.Filter = "Archivos PDF|*.pdf";
-                saveFileDialog.Title = "Guardar como PDF";
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    // Crea un documento PDF
-                    Document doc = new Document();
-
-                    //try
-                    //{
-                        // Crea un escritor de PDF
-                        PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(saveFileDialog.FileName, FileMode.Create));
-                        doc.Open();
-
-                        int currentRow = 0;
-                        int totalRows = dgvRecibos.Rows.Count;
-
-                        // Imprime las filas en el documento PDF
-                        while (currentRow <= totalRows-2)
-                        {
-                            DataGridViewRow row = dgvRecibos.Rows[currentRow];
-
-                            // Agrega los datos de la fila al documento PDF
-                            for (int j = 0; j < row.Cells.Count; j++)
-                            {
-                            object cellValue = row.Cells[j].Value;
-                            string cellText = cellValue != null ? cellValue.ToString() : string.Empty;
-                            doc.Add(new Paragraph(dgvRecibos.Columns[j].HeaderText + ": " + cellText));
-                        }
-
-                        doc.Add(new Paragraph("-----------------"));
-                            currentRow++;
-                        }
-
-                        // Imprime el total al final
-                        string totalText = "Total = " + lblPayValue.Text + " " + lblNumeroEnLetras.Text;
-                        doc.Add(new Paragraph(totalText));
-
-                        // Cierra el documento PDF
-
-                        MessageBox.Show("PDF creado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        doc.Close();
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    MessageBox.Show("Error al crear el PDF: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    //}
-                }
-            }
-            else
-            {
-                MessageBox.Show("No hay filas en el DataGridView para imprimir.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            
-        }
     }
 }
