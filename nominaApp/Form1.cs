@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using static System.Resources.ResXFileRef;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using System.Net.Mail;
 
 
 namespace nominaApp
@@ -301,13 +302,30 @@ namespace nominaApp
                         doc.Add(new Paragraph(totalText));
 
                         // Cierra el documento PDF
-
-                        MessageBox.Show("PDF creado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         doc.Close();
+
+                        // Crea un mensaje de correo electrónico
+                        MailMessage mailMessage = new MailMessage();
+                        mailMessage.From = new MailAddress("andresvazquezo1@hotmail.com");
+                        mailMessage.To.Add("andresvazquezo1@hotmail.com");
+                        mailMessage.Subject = "Payroll PDF";
+                        mailMessage.Body = "You will find the Payroll.pdf file attached in this mail.";
+
+                        // Adjunta el archivo PDF al mensaje de correo electrónico
+                        Attachment attachment = new Attachment(saveFileDialog.FileName);
+                        mailMessage.Attachments.Add(attachment);
+
+                        // Configura el cliente SMTP y envía el correo electrónico
+                        SmtpClient smtpClient = new SmtpClient("smtp-mail.outlook.com", 587);
+                        smtpClient.EnableSsl = true;
+                        smtpClient.Credentials = new System.Net.NetworkCredential("andresvazquezo1@hotmail.com", "acereros27");
+                        smtpClient.Send(mailMessage);
+
+                        MessageBox.Show("Correo electrónico enviado exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Error al crear el PDF: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Error al crear el PDF o enviar el correo electrónico: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
@@ -315,7 +333,6 @@ namespace nominaApp
             {
                 MessageBox.Show("No hay filas en el DataGridView para imprimir.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-
         }
 
         /// <summary>
@@ -821,5 +838,19 @@ namespace nominaApp
 
         #endregion
 
+        private void lblNumeroEnLetras_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblPayValue_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblPay_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

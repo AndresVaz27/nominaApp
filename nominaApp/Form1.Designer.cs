@@ -593,6 +593,7 @@
             this.lblPay.Size = new System.Drawing.Size(73, 29);
             this.lblPay.TabIndex = 24;
             this.lblPay.Text = "Pay =";
+            this.lblPay.Click += new System.EventHandler(this.lblPay_Click);
             // 
             // lblPayValue
             // 
@@ -604,6 +605,7 @@
             this.lblPayValue.Size = new System.Drawing.Size(137, 29);
             this.lblPayValue.TabIndex = 25;
             this.lblPayValue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblPayValue.Click += new System.EventHandler(this.lblPayValue_Click);
             // 
             // lblNumeroEnLetras
             // 
@@ -615,6 +617,7 @@
             this.lblNumeroEnLetras.Size = new System.Drawing.Size(725, 29);
             this.lblNumeroEnLetras.TabIndex = 26;
             this.lblNumeroEnLetras.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblNumeroEnLetras.Click += new System.EventHandler(this.lblNumeroEnLetras_Click);
             // 
             // dgvRecibos
             // 
