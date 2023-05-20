@@ -42,7 +42,169 @@ namespace nominaApp
             panelPayroll.Visible = false;
             imagesPath = @"C:\Users\andre\source\repos\nominaApp - Copy\nominaApp\bin\Debug\imagesPath";
         }
+        #region Form1
+        /// <summary>
+        /// Closes active WebCam and saves DataGridView data when the program is closing.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            CloseWebCam();
+            SaveDGVRecibos();
+        }
+        /// <summary>
+        /// Loads several objects and data when the program opens.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            LoadDGVRecibos();
+            GetImageCounter();
+            LoadDepartments();
+            LoadDevices();
+            TotalPay();
+            EliminarFilasVacias(dgvRecibos);
+        }
+
+        /// <summary>
+        /// Reads data contained in departamentos.txt to fill ComboBox2.
+        /// </summary>
+        public void LoadDepartments()
+        {
+            // Add every existing Department in ComboBox2.
+            string departamentos = "departamentos.txt";
+            if (File.Exists(departamentos))
+            {
+                StreamReader reader = new StreamReader(departamentos);
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        string[] values = line.Split(',');
+                        comboBox2.Items.Add(values[0]);
+                    }
+                }
+            }
+            comboBox2.Text = comboBox2.Items[0].ToString();
+        }
+        /// <summary>
+        /// Reads doc that contains Image Counter for new image file generator.
+        /// </summary>
+        public void GetImageCounter()
+        {
+            // Read counter value from txt file if the file exists.
+            if (File.Exists(counterFilePath))
+            {
+                string counterString = File.ReadAllText(counterFilePath);
+                int counterValue;
+                // Convert string to int value.
+                if (int.TryParse(counterString, out counterValue))
+                {
+                    // Asign value to variable.
+                    imageCounter = counterValue;
+                }
+            }
+        }
+        /// <summary>
+        /// Reads data containded in datosDGVRecibos.csv to fill DataGridView.
+        /// </summary>
+        public void LoadDGVRecibos()
+        {
+            // Obtener la ruta del archivo donde se guardaron los datos
+            string filePath = "datosDGVRecibos.csv";
+
+            // Comprobar si el archivo existe
+            if (File.Exists(filePath))
+            {
+                // Crear un StreamReader para leer el archivo
+                using (StreamReader reader = new StreamReader(filePath))
+                {
+                    // Leer la primera línea que contiene los nombres de las columnas (si el archivo no está vacío)
+                    string line = reader.ReadLine();
+                    if (!string.IsNullOrEmpty(line))
+                    {
+                        string[] headers = line.Split(',');
+
+                        // Agregar las columnas al DataGridView
+                        foreach (string header in headers)
+                        {
+                            dgvRecibos.Columns.Add(header, header);
+                        }
+                    }
+
+                    // Leer las líneas restantes que contienen los datos de las filas
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        string[] values = line.Split(',');
+
+                        // Crear una nueva fila y agregar los valores de las celdas
+                        DataGridViewRow row = new DataGridViewRow();
+                        foreach (string value in values)
+                        {
+                            row.Cells.Add(new DataGridViewTextBoxCell { Value = value });
+                        }
+
+                        // Agregar la fila al DataGridView
+                        dgvRecibos.Rows.Add(row);
+                    }
+                    reader.Close();
+                }
+            }
+        }
+        /// <summary>
+        /// Saves DataGridView's data.
+        /// </summary>
+        public void SaveDGVRecibos()
+        {
+            string filePath = "datosDGVRecibos.csv";
+
+            // Crear un StreamWriter para escribir en el archivo CSV
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                // Escribir los nombres de las columnas en la primera línea
+                for (int i = 0; i < dgvRecibos.Columns.Count; i++)
+                {
+                    writer.Write(dgvRecibos.Columns[i].HeaderText);
+                    if (i < dgvRecibos.Columns.Count - 1)
+                    {
+                        writer.Write(",");
+                    }
+                }
+                writer.WriteLine();
+
+                // Escribir el contenido de cada fila en líneas separadas
+                foreach (DataGridViewRow row in dgvRecibos.Rows)
+                {
+                    for (int i = 0; i < dgvRecibos.Columns.Count; i++)
+                    {
+                        if (!row.IsNewRow)
+                        {
+                            writer.Write(row.Cells[i].Value);
+                        }
+
+                        if (i < dgvRecibos.Columns.Count - 1)
+                        {
+                            writer.Write(",");
+                        }
+                    }
+                    writer.WriteLine();
+                }
+
+                writer.Close();
+            }
+        }
+
+        #endregion
+
         #region Buttons
+        
+        /// <summary>
+        /// Creates PDF file with Individual Selected Employee's receipt.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnIndividualReceipt_Click(object sender, EventArgs e)
         {
             // Verifica si se ha seleccionado una fila en el DataGridView
@@ -89,6 +251,11 @@ namespace nominaApp
             }
         }
 
+        /// <summary>
+        /// Creates a PDF File containing every Payroll detail.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnPDFPayroll_Click(object sender, EventArgs e)
         {
             // Verifica si hay filas en el DataGridView
@@ -150,6 +317,7 @@ namespace nominaApp
             }
 
         }
+
         /// <summary>
         /// Show Payroll Menu
         /// </summary>
@@ -277,6 +445,10 @@ namespace nominaApp
         #endregion
 
         #region dgvRecibos
+        /// <summary>
+        /// Delete empty rows when the program opens method.
+        /// </summary>
+        /// <param name="dataGridView"></param>
         private void EliminarFilasVacias(DataGridView dataGridView)
         {
             for (int i = dataGridView.Rows.Count - 1; i >= 0; i--)
@@ -296,6 +468,12 @@ namespace nominaApp
                 }
             }
         }
+
+        /// <summary>
+        /// Cleans controls when a selected DataGridView's row changes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dgvRecibos_SelectionChanged(object sender, EventArgs e)
         {
             txtNamePayroll.Text = string.Empty;
@@ -322,6 +500,12 @@ namespace nominaApp
             lblTotalPerceptionsValue.Visible = false;
             lblTotalDeductionsValue.Visible = false;
         }
+
+        /// <summary>
+        /// Convert number toText method.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         private string toText(double value)
         {
             string Num2Text = "";
@@ -387,6 +571,10 @@ namespace nominaApp
             return Num2Text;
 
         }
+
+        /// <summary>
+        /// Calculates total Payroll showing quantity in numbers and letters calling toText Method.
+        /// </summary>
         private void TotalPay()
         {
             CultureInfo cultureInfo = new CultureInfo("es-MX");
@@ -404,10 +592,17 @@ namespace nominaApp
             lblPayValue.Text = suma.ToString("C", cultureInfo);
             lblNumeroEnLetras.Text = toText(Convert.ToDouble(suma)) + " PESOS.";
         }
+
+        /// <summary>
+        /// Calls TotalPay method everytime a row from the DataGridView is deleted.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dgvRecibos_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
             TotalPay();
         }
+
         /// <summary>
         /// Show Employee's Info on Controls when clicking a DataGridView Row
         /// </summary>
@@ -444,6 +639,7 @@ namespace nominaApp
                 MessageBox.Show("Unable to show Employee's Info");
             }
         }
+
         /// <summary>
         /// Delete Employee from the DataGridView using Suprimir | Delete Key.
         /// </summary>
@@ -493,140 +689,6 @@ namespace nominaApp
 
         #endregion
 
-        #region Form1
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            CloseWebCam();
-            SaveDGVRecibos();
-        }
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            LoadDGVRecibos();
-            GetImageCounter();
-            LoadDepartments();
-            LoadDevices();
-            TotalPay();
-            EliminarFilasVacias(dgvRecibos);
-        }
-        
-        public void LoadDepartments()
-        {
-            // Add every existing Department in ComboBox2.
-            string departamentos = "departamentos.txt";
-            if (File.Exists(departamentos))
-            {
-                StreamReader reader = new StreamReader(departamentos);
-                {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        string[] values = line.Split(',');
-                        comboBox2.Items.Add(values[0]);
-                    }
-                }
-            }
-            comboBox2.Text = comboBox2.Items[0].ToString();
-        }
-        public void GetImageCounter()
-        {
-            // Read counter value from txt file if the file exists.
-            if (File.Exists(counterFilePath))
-            {
-                string counterString = File.ReadAllText(counterFilePath);
-                int counterValue;
-                // Convert string to int value.
-                if (int.TryParse(counterString, out counterValue))
-                {
-                    // Asign value to variable.
-                    imageCounter = counterValue;
-                }
-            }
-        }
-        public void LoadDGVRecibos()
-        {
-            // Obtener la ruta del archivo donde se guardaron los datos
-            string filePath = "datosDGVRecibos.csv";
-
-            // Comprobar si el archivo existe
-            if (File.Exists(filePath))
-            {
-                // Crear un StreamReader para leer el archivo
-                using (StreamReader reader = new StreamReader(filePath))
-                {
-                    // Leer la primera línea que contiene los nombres de las columnas (si el archivo no está vacío)
-                    string line = reader.ReadLine();
-                    if (!string.IsNullOrEmpty(line))
-                    {
-                        string[] headers = line.Split(',');
-
-                        // Agregar las columnas al DataGridView
-                        foreach (string header in headers)
-                        {
-                            dgvRecibos.Columns.Add(header, header);
-                        }
-                    }
-
-                    // Leer las líneas restantes que contienen los datos de las filas
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        string[] values = line.Split(',');
-
-                        // Crear una nueva fila y agregar los valores de las celdas
-                        DataGridViewRow row = new DataGridViewRow();
-                        foreach (string value in values)
-                        {
-                            row.Cells.Add(new DataGridViewTextBoxCell { Value = value });
-                        }
-
-                        // Agregar la fila al DataGridView
-                        dgvRecibos.Rows.Add(row);
-                    }
-                    reader.Close();
-                }
-            }
-        }
-        public void SaveDGVRecibos()
-        {
-            string filePath = "datosDGVRecibos.csv";
-
-            // Crear un StreamWriter para escribir en el archivo CSV
-            using (StreamWriter writer = new StreamWriter(filePath))
-            {
-                // Escribir los nombres de las columnas en la primera línea
-                for (int i = 0; i < dgvRecibos.Columns.Count; i++)
-                {
-                    writer.Write(dgvRecibos.Columns[i].HeaderText);
-                    if (i < dgvRecibos.Columns.Count - 1)
-                    {
-                        writer.Write(",");
-                    }
-                }
-                writer.WriteLine();
-
-                // Escribir el contenido de cada fila en líneas separadas
-                foreach (DataGridViewRow row in dgvRecibos.Rows)
-                {
-                    for (int i = 0; i < dgvRecibos.Columns.Count; i++)
-                    {
-                        if (!row.IsNewRow)
-                        {
-                            writer.Write(row.Cells[i].Value);
-                        }
-
-                        if (i < dgvRecibos.Columns.Count - 1)
-                        {
-                            writer.Write(",");
-                        }
-                    }
-                    writer.WriteLine();
-                }
-
-                writer.Close();
-            }
-        }
-
-        #endregion
-
         #region Video Input Device
         /// <summary>
         /// Load Video Input Devices to show in ComboBox1.
@@ -648,6 +710,7 @@ namespace nominaApp
             else
                 devicesExist = false;
         }
+
         /// <summary>
         /// Start Recording using VideoInputDevice selected in comboBox1.
         /// </summary>
@@ -670,11 +733,13 @@ namespace nominaApp
             // Start using the Device.
             myWebCam.Start();
         }
+
         /// <summary>
         /// Clone the new frame taken and send it to the PictureBox.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="eventArgs"></param>
+        /// 
         public void Recording(object sender, NewFrameEventArgs eventArgs)
         {
             // Clone the new frame.
@@ -682,7 +747,7 @@ namespace nominaApp
             // Show the copy of the frame in the PictureBox.
             pbxEmployee.Image = image;
         }
-
+        
         /// <summary>
         /// Stop using the Video Input Device (MyWebCam).
         /// </summary>
@@ -694,8 +759,9 @@ namespace nominaApp
                 myWebCam = null;
             }
         }
+       
         /// <summary>
-        /// Take Photo saving the image from the picturebox.
+        /// Take Photo cropping and saving the image from the picturebox.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
